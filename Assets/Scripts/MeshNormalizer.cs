@@ -6,10 +6,9 @@ public class MeshNormalizer
 {
     /// <summary>
     /// Mesh normalizing functions
-    /// TODO: Recalculate uvs, normals, etc..
     /// </summary>
-    /// <param name="mesh">A mesh containing the new vertices and triangles</param>
-    /// <returns>The normalized mesh (missings uvs, normals, etc..)</returns>
+    /// <param name="mesh">A mesh containing the vertices and triangles</param>
+    /// <returns>The normalized mesh</returns>
     public NormalizedMesh Normalize(Mesh mesh)
     {
         //Get a list of vertices and it's indexes
@@ -34,7 +33,7 @@ public class MeshNormalizer
             Vertices = newVertexList.ToArray(),
             Triangles = newTrianglesList.ToArray()
         };
-
+        //Create tests for this using a geodesic sphere
         return normalizedMesh;
     }
 
