@@ -22,6 +22,7 @@ sysinfo.txt
 /*.unityproj
 /*.booproj
 /.idea*/
+/.vscode
  
 # ============ #
 # OS generated #
