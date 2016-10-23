@@ -2,22 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ChunksOfExtension
+namespace SpaceCentipedeFromHell
 {
-    public static IEnumerable<IEnumerable<TResult>> ChunksOf<TResult>(this IEnumerable<TResult> enumerable, int size)
+    public static class ChunksOfExtension
     {
-        if (enumerable == null) throw new ArgumentNullException("enumerable");
-
-        var chunk = new List<TResult>();
-
-        for (int i = 0; i < enumerable.Count(); i++)
+        public static IEnumerable<IEnumerable<TResult>> ChunksOf<TResult>(this IEnumerable<TResult> enumerable, int size)
         {
-            chunk.Add(enumerable.ElementAt(i));
+            if (enumerable == null) throw new ArgumentNullException("enumerable");
 
-            if ((i + 1) % size == 0)
+            var chunk = new List<TResult>();
+
+            for (int i = 0; i < enumerable.Count(); i++)
             {
-                yield return chunk;
-                chunk = new List<TResult>();
+                chunk.Add(enumerable.ElementAt(i));
+
+                if ((i + 1) % size == 0)
+                {
+                    yield return chunk;
+                    chunk = new List<TResult>();
+                }
             }
         }
     }

@@ -3,8 +3,12 @@ using UnityEditor;
 using NUnit.Framework;
 using System.Linq;
 using System.Collections.Generic;
+using SpaceCentipedeFromHell;
 
-public class NavigationMeshTest
+namespace SpaceCentipedeFromHell.Tests
 {
-
+    public class NavigationMeshTest
+    {
+       
+    }
 }

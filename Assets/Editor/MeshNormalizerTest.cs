@@ -3,41 +3,45 @@ using UnityEditor;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using SpaceCentipedeFromHell;
 
-public class MeshNormalizerTest
+namespace SpaceCentipedeFromHell.Tests
 {
-
-    [Test]
-    public void NormalizedGeodesicSphereTest1()
+    public class MeshNormalizerTest
     {
-        var sphere = GeodesicSphere.InitializeSphere(2);
 
-        var mesh = new Mesh()
+        [Test]
+        public void NormalizedGeodesicSphereTest1()
         {
-            vertices = sphere.ToArray(),
-            triangles = Enumerable.Range(0, sphere.Count).ToArray()
-        };
+            var sphere = GeodesicSphere.InitializeSphere(2);
 
-        var normalizedMesh = new MeshNormalizer().Normalize(mesh);
+            var mesh = new Mesh()
+            {
+                vertices = sphere.ToArray(),
+                triangles = Enumerable.Range(0, sphere.Count).ToArray()
+            };
 
-        Assert.AreEqual(162, normalizedMesh.Vertices.Count(), "A geodesic sphere created by 2 subdivisions must have 642 vertices");
-        Assert.AreEqual(mesh.triangles.Count(), normalizedMesh.Triangles.Count(), "The number of faces should stay the same");
-    }
+            var normalizedMesh = new MeshNormalizer().Normalize(mesh);
 
-    [Test]
-    public void NormalizedGeodesicSphereTest2()
-    {
-        var sphere = GeodesicSphere.InitializeSphere(3);
+            Assert.AreEqual(162, normalizedMesh.Vertices.Count(), "A geodesic sphere created by 2 subdivisions must have 642 vertices");
+            Assert.AreEqual(mesh.triangles.Count(), normalizedMesh.Triangles.Count(), "The number of faces should stay the same");
+        }
 
-        var mesh = new Mesh()
+        [Test]
+        public void NormalizedGeodesicSphereTest2()
         {
-            vertices = sphere.ToArray(),
-            triangles = Enumerable.Range(0, sphere.Count).ToArray()
-        };
+            var sphere = GeodesicSphere.InitializeSphere(3);
 
-        var normalizedMesh = new MeshNormalizer().Normalize(mesh);
+            var mesh = new Mesh()
+            {
+                vertices = sphere.ToArray(),
+                triangles = Enumerable.Range(0, sphere.Count).ToArray()
+            };
 
-        Assert.AreEqual(642, normalizedMesh.Vertices.Count(), "A geodesic sphere created by 3 subdivisions must have 642 vertices");
-        Assert.AreEqual(mesh.triangles.Count(), normalizedMesh.Triangles.Count(), "The number of faces should stay the same");
+            var normalizedMesh = new MeshNormalizer().Normalize(mesh);
+
+            Assert.AreEqual(642, normalizedMesh.Vertices.Count(), "A geodesic sphere created by 3 subdivisions must have 642 vertices");
+            Assert.AreEqual(mesh.triangles.Count(), normalizedMesh.Triangles.Count(), "The number of faces should stay the same");
+        }
     }
 }
