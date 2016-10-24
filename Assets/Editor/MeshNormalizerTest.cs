@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using NUnit.Framework;
-using System.Collections.Generic;
 using System.Linq;
-using SpaceCentipedeFromHell;
 
 namespace SpaceCentipedeFromHell.Tests
 {

@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace SpaceCentipedeFromHell.Tests
+﻿namespace SpaceCentipedeFromHell.Tests
 {
     public class TestObject
     {

@@ -1,5 +1,4 @@
-﻿using SpaceCentipedeFromHell;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SpaceCentipedeFromHell.Tests
 {

@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace SpaceCentipedeFromHell
+﻿namespace SpaceCentipedeFromHell
 {
     public interface IPathfindingGrid<TNode> where TNode : PathfindingNode
     {
