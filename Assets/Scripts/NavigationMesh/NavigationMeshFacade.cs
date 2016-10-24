@@ -4,14 +4,9 @@ using Zenject;
 
 namespace SpaceCentipedeFromHell
 {
-    public class PlanetFacade : MonoBehaviour
+    public class NavigationMeshFacade : MonoBehaviour
     {
         private NavigationMesh navigationMesh;
-
-        public void Start()
-        {
-            Debug.Log("Hello!");
-        }
 
         [Inject]
         public void Construct(NavigationMesh navigationMesh)

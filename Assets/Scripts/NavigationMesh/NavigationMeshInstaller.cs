@@ -4,7 +4,7 @@ using Zenject;
 
 namespace SpaceCentipedeFromHell
 {
-    public class PlanetInstaller : MonoInstaller
+    public class NavigationMeshInstaller : MonoInstaller
     {
         [SerializeField]
         Settings settings = null;
@@ -12,7 +12,7 @@ namespace SpaceCentipedeFromHell
         public override void InstallBindings()
         {
             Container.BindInstance(settings.MeshFilter).WhenInjectedInto<NavigationMesh>();
-            Container.Bind<MeshNormalizer>().AsSingle();
+            Container.Bind<MeshNormalizer>().AsTransient();
             Container.Bind<NavigationMesh>().AsSingle();
         }
 
