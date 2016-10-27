@@ -11,7 +11,7 @@ namespace SpaceCentipedeFromHell
         public override void InstallBindings()
         {
             Container.BindInstance(settings.MeshFilter).WhenInjectedInto<NavigationMesh>();
-            Container.Bind<MeshNormalizer>().AsTransient();
+            Container.Bind<MeshNormalizer>().AsSingle();
             Container.Bind<NavigationMesh>().AsSingle();
         }
 

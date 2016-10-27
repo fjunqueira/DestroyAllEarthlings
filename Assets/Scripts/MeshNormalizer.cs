@@ -59,6 +59,7 @@ namespace SpaceCentipedeFromHell
     public class NormalizedMesh
     {
         public Vector3[] Vertices { get; set; }
+
         public int[] Triangles { get; set; }
     }
 }

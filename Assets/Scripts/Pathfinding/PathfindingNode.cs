@@ -3,8 +3,13 @@ using System;
 
 namespace SpaceCentipedeFromHell
 {
-	public abstract class PathfindingNode
+    public abstract class PathfindingNode
     {
+        public PathfindingNode()
+        {
+            this.IsWalkable = true;
+        }
+
         private float weight;
 
         public float Weight
