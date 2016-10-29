@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -11,9 +9,9 @@ namespace SpaceCentipedeFromHell.Tests
     ///</summary>
     public class PlanetGridTest
     {
-        public static IOrderedEnumerable<IGrouping<int, KeyValuePair<PlanetNode, IEnumerable<PlanetNode>>>> GetSizes(PlanetGrid navMesh)
+        public static List<IGrouping<int, KeyValuePair<PlanetNode, IEnumerable<PlanetNode>>>> GetSizes(PlanetGrid navMesh)
         {
-            return navMesh.PlanetAdjacencyMap.GroupBy(x => x.Value.Count()).OrderByDescending(x => x.Key);
+            return navMesh.PlanetAdjacencyMap.GroupBy(x => x.Value.Count()).ToList().OrderByDescending(x => x.Key).ToList();
         }
 
         [Test]
@@ -82,14 +80,12 @@ namespace SpaceCentipedeFromHell.Tests
             var grid = new PlanetGrid(navMesh, 1);
 
             var startingNode = grid.PlanetAdjacencyMap.ElementAt(0).Key;
-            var endingNode = grid.PlanetAdjacencyMap.ElementAt(10).Key;
+            var endingNode = grid.PlanetAdjacencyMap.ElementAt(1).Key;
 
             var path = grid.FindPath(startingNode, endingNode);
 
             Assert.IsNotNull(path);
             Assert.IsNotEmpty(path);
-
-            Debug.Log(path.Length);
         }
     }
 }

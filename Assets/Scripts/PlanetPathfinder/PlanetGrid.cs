@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 using UnityEngine;
-using System.Collections;
-using System;
 using System.Collections.Generic;
 
 namespace SpaceCentipedeFromHell
@@ -10,16 +8,19 @@ namespace SpaceCentipedeFromHell
     {
         private float planetRadius;
 
-        private readonly Dictionary<PlanetNode, IEnumerable<PlanetNode>> planetAdjacencyMap;
+        private Dictionary<PlanetNode, IEnumerable<PlanetNode>> planetAdjacencyMap = new Dictionary<PlanetNode, IEnumerable<PlanetNode>>();
 
         public PlanetGrid(NavigationMesh navMesh, float planetRadius)
         {
             this.planetRadius = planetRadius;
 
-            //Change the navmesh indexing key to the triangle centroid and use the data at the navmesh instead of this
-            this.planetAdjacencyMap =
-                navMesh.AdjacencyMap.Select(map => new KeyValuePair<PlanetNode, IEnumerable<PlanetNode>>(
-                    new PlanetNode(this, map.Key), map.Value.Select(triangle => new PlanetNode(this, triangle)))).ToDictionary();
+            var keys = navMesh.AdjacencyMap.Keys.Select(key => new PlanetNode(this, key)).ToList();
+
+            // This is needed because each node reference must be unique for the pathfinder
+            var values = navMesh.AdjacencyMap.Values.Select(adjacentTriangles =>
+                keys.Where(planetNode => adjacentTriangles.Contains(planetNode.Triangle))).ToList();
+
+            for (int i = 0; i < keys.Count(); i++) this.planetAdjacencyMap.Add(keys[i], values[i]);
         }
 
         public Dictionary<PlanetNode, IEnumerable<PlanetNode>> PlanetAdjacencyMap

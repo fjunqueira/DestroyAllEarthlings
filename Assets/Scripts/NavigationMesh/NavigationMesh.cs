@@ -19,12 +19,19 @@ namespace SpaceCentipedeFromHell
 
             var triangles = normalizedMesh.Triangles.ChunksOf(3).ToList();
 
-            this.adjacencyMap = triangles
-                .Select(triangle => new KeyValuePair<Triangle, IEnumerable<Triangle>>(new Triangle(IndexToVertex(triangle, normalizedMesh)),
-                triangles.Where(otherTriangle => otherTriangle != triangle &&
-                     (otherTriangle.Contains(triangle.ElementAt(0)) ||
-                     otherTriangle.Contains(triangle.ElementAt(1)) ||
-                     otherTriangle.Contains(triangle.ElementAt(2)))).Select(otherTriangle => new Triangle(IndexToVertex(otherTriangle, normalizedMesh))))).ToDictionary();
+            this.adjacencyMap = triangles.Select(triangle => new KeyValuePair<Triangle, IEnumerable<Triangle>>(
+                new Triangle(IndexToVertex(triangle, normalizedMesh)),
+                triangles.Where(otherTriangle => HasCommonVertices(otherTriangle, triangle))
+                .Select(otherTriangle =>
+                    new Triangle(IndexToVertex(otherTriangle, normalizedMesh))))).ToDictionary();
+        }
+
+        private bool HasCommonVertices(IEnumerable<int> otherTriangle, IEnumerable<int> triangle)
+        {
+            return otherTriangle != triangle &&
+                   (otherTriangle.Contains(triangle.ElementAt(0)) ||
+                   otherTriangle.Contains(triangle.ElementAt(1)) ||
+                   otherTriangle.Contains(triangle.ElementAt(2)));
         }
 
         private IEnumerable<Vector3> IndexToVertex(IEnumerable<int> indexes, NormalizedMesh mesh)

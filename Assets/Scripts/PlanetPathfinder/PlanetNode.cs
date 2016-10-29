@@ -1,8 +1,5 @@
 ﻿using System.Linq;
 using UnityEngine;
-using System.Collections;
-using System;
-using System.Collections.Generic;
 
 namespace SpaceCentipedeFromHell
 {
@@ -26,25 +23,33 @@ namespace SpaceCentipedeFromHell
             }
         }
 
+        public Triangle Triangle
+        {
+            get
+            {
+                return this.triangle;
+            }
+        }
+
         public override PathfindingNode[] GetAdjacentNodes()
         {
             return this.PlanetGrid.GetNodesAdjacentTo(this).ToArray();
         }
 
-        public override int GetHashCode()
-        {
-            return this.triangle.GetHashCode();
-        }
+        // public override int GetHashCode()
+        // {
+        //     return this.triangle.GetHashCode();
+        // }
 
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
+        // public override bool Equals(object obj)
+        // {
+        //     if (obj == null) return false;
 
-            PlanetNode otherNode = obj as PlanetNode;
+        //     PlanetNode otherNode = obj as PlanetNode;
 
-            if (otherNode == null) return false;
+        //     if (otherNode == null) return false;
 
-            return this.triangle.Equals(otherNode.triangle);
-        }
+        //     return this.triangle.Equals(otherNode.triangle);
+        // }
     }
 }
