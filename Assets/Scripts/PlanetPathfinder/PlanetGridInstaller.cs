@@ -10,8 +10,6 @@ namespace SpaceCentipedeFromHell
 
         public override void InstallBindings()
         {
-            //Container.BindInstance(settings.NavigationMesh).WhenInjectedInto<NavigationMesh>();
-            //Container.Bind<MeshNormalizer>().AsSingle();
             Container.BindInstance(settings.PlanetRadius);
             Container.Bind<PlanetGrid>().AsSingle();
         }

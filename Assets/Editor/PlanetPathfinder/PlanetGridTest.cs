@@ -11,7 +11,7 @@ namespace SpaceCentipedeFromHell.Tests
     {
         public static List<IGrouping<int, KeyValuePair<PlanetNode, IEnumerable<PlanetNode>>>> GetSizes(PlanetGrid navMesh)
         {
-            return navMesh.PlanetAdjacencyMap.GroupBy(x => x.Value.Count()).ToList().OrderByDescending(x => x.Key).ToList();
+            return navMesh.AdjacencyIndexing.GroupBy(x => x.Value.Count()).ToList().OrderByDescending(x => x.Key).ToList();
         }
 
         [Test]
@@ -21,7 +21,7 @@ namespace SpaceCentipedeFromHell.Tests
 
             var grid = new PlanetGrid(navMesh, 1);
 
-            Assert.AreEqual(320, grid.PlanetAdjacencyMap.Count, "There must be one entry for each of the 320 vertices of the Geodesic Sphere");
+            Assert.AreEqual(320, grid.AdjacencyIndexing.Count, "There must be one entry for each of the 320 vertices of the Geodesic Sphere");
         }
 
         [Test]
@@ -73,19 +73,36 @@ namespace SpaceCentipedeFromHell.Tests
         }
 
         [Test]
-        public void FindPathOnGeodesicSphereSurface()
+        public void FindPathOnGeodesicSphereSurface1()
         {
             var navMesh = TestNavMeshBuilder.BuildNavMesh();
 
             var grid = new PlanetGrid(navMesh, 1);
 
-            var startingNode = grid.PlanetAdjacencyMap.ElementAt(0).Key;
-            var endingNode = grid.PlanetAdjacencyMap.ElementAt(1).Key;
+            var startingNode = grid.AdjacencyIndexing.ElementAt(0).Key;
+            var endingNode = grid.AdjacencyIndexing.ElementAt(100).Key;
 
             var path = grid.FindPath(startingNode, endingNode);
 
             Assert.IsNotNull(path);
             Assert.IsNotEmpty(path);
+        }
+
+
+        [Test]
+        public void FindPathOnGeodesicSphereSurface2()
+        {
+            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+
+            var grid = new PlanetGrid(navMesh, 1);
+
+            var startingNode = grid.AdjacencyIndexing.ElementAt(0).Key;
+            var endingNode = grid.AdjacencyIndexing.ElementAt(100).Key;
+
+            var path = grid.FindPath(startingNode, endingNode);
+
+            Assert.AreEqual(startingNode, path.First(), "The first node in the path should be the starting node");
+            Assert.AreEqual(endingNode, path.Last(), "The last node in the path should be the ending node");
         }
     }
 }

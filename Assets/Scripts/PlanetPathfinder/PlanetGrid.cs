@@ -8,7 +8,9 @@ namespace SpaceCentipedeFromHell
     {
         private float planetRadius;
 
-        private Dictionary<PlanetNode, IEnumerable<PlanetNode>> planetAdjacencyMap = new Dictionary<PlanetNode, IEnumerable<PlanetNode>>();
+        private Dictionary<PlanetNode, IEnumerable<PlanetNode>> adjacencyIndexing = new Dictionary<PlanetNode, IEnumerable<PlanetNode>>();
+
+        private Dictionary<Vector3, PlanetNode> positionIndexing = new Dictionary<Vector3, PlanetNode>();
 
         public PlanetGrid(NavigationMesh navMesh, float planetRadius)
         {
@@ -20,24 +22,16 @@ namespace SpaceCentipedeFromHell
             var values = navMesh.AdjacencyMap.Values.Select(adjacentTriangles =>
                 keys.Where(planetNode => adjacentTriangles.Contains(planetNode.Triangle))).ToList();
 
-            for (int i = 0; i < keys.Count(); i++) this.planetAdjacencyMap.Add(keys[i], values[i]);
+            for (int i = 0; i < keys.Count(); i++) this.adjacencyIndexing.Add(keys[i], values[i]);
+
+            this.positionIndexing = keys.ToDictionary(x => x.Position);
         }
 
-        public Dictionary<PlanetNode, IEnumerable<PlanetNode>> PlanetAdjacencyMap
-        {
-            get
-            {
-                return this.planetAdjacencyMap;
-            }
-        }
+        public Dictionary<PlanetNode, IEnumerable<PlanetNode>> AdjacencyIndexing { get { return this.adjacencyIndexing; } }
 
-        public int Size
-        {
-            get
-            {
-                return this.planetAdjacencyMap.Keys.Count;
-            }
-        }
+        public Dictionary<Vector3, PlanetNode> PositionIndexing { get {Debug.Log("AAAAAAAAAAAAAAAAAAA"); return this.positionIndexing; } }
+
+        public int Size { get { return this.adjacencyIndexing.Keys.Count; } }
 
         public float GetHeuristic(PlanetNode from, PlanetNode to)
         {
@@ -57,7 +51,7 @@ namespace SpaceCentipedeFromHell
 
         public IEnumerable<PlanetNode> GetNodesAdjacentTo(PlanetNode node)
         {
-            return this.planetAdjacencyMap[node];
+            return this.adjacencyIndexing[node];
         }
     }
 }

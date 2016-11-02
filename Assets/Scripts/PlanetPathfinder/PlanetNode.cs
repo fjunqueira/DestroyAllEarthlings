@@ -5,51 +5,21 @@ namespace SpaceCentipedeFromHell
 {
     public class PlanetNode : PathfindingNode
     {
-        private Triangle triangle;
-
-        public PlanetGrid PlanetGrid { get; private set; }
-
         public PlanetNode(PlanetGrid grid, Triangle triangle)
         {
-            this.triangle = triangle;
+            this.Triangle = triangle;
             this.PlanetGrid = grid;
         }
 
-        public override Vector3 Position
-        {
-            get
-            {
-                return this.triangle.Centroid;
-            }
-        }
+        public Triangle Triangle { get; private set; }
 
-        public Triangle Triangle
-        {
-            get
-            {
-                return this.triangle;
-            }
-        }
+        public PlanetGrid PlanetGrid { get; private set; }
+
+        public override Vector3 Position { get { return this.Triangle.Centroid; } }
 
         public override PathfindingNode[] GetAdjacentNodes()
         {
             return this.PlanetGrid.GetNodesAdjacentTo(this).ToArray();
         }
-
-        // public override int GetHashCode()
-        // {
-        //     return this.triangle.GetHashCode();
-        // }
-
-        // public override bool Equals(object obj)
-        // {
-        //     if (obj == null) return false;
-
-        //     PlanetNode otherNode = obj as PlanetNode;
-
-        //     if (otherNode == null) return false;
-
-        //     return this.triangle.Equals(otherNode.triangle);
-        // }
     }
 }
