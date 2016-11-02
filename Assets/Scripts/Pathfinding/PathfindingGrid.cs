@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 namespace SpaceCentipedeFromHell
 {
@@ -13,7 +14,7 @@ namespace SpaceCentipedeFromHell
             return FindPath(grid, startingNode, destinationNode, grid.Size);
         }
 
-        public static PathfindingNode[] FindPath<TNode>(this IPathfindingGrid<TNode> grid, PathfindingNode startingNode, PathfindingNode destinationNode, int nodeSearchLimit) where TNode : PathfindingNode
+        public static PathfindingNode[] FindPath<TNode>(this IPathfindingGrid<TNode> grid, PathfindingNode startingNode, PathfindingNode destinationNode, int maxIterations) where TNode : PathfindingNode
         {
             runId = Guid.NewGuid();
 
@@ -21,7 +22,7 @@ namespace SpaceCentipedeFromHell
 
             startingNode.ResetInfo(runId);
 
-            var currentNode = FindNextNode(binaryHeapOpenList, grid, startingNode, destinationNode, nodeSearchLimit, 0);
+            var currentNode = FindNextNode(binaryHeapOpenList, grid, startingNode, destinationNode, maxIterations, 0);
 
             var orderedPath = new Stack<PathfindingNode>();
 
@@ -35,7 +36,7 @@ namespace SpaceCentipedeFromHell
             return orderedPath.ToArray();
         }
 
-        private static PathfindingNode FindNextNode<TNode>(BinaryHeap<PathfindingNode> binaryHeapOpenList, IPathfindingGrid<TNode> grid, PathfindingNode currentNode, PathfindingNode destinationNode, int nodeSearchLimit, int currentVisited) where TNode : PathfindingNode
+        private static PathfindingNode FindNextNode<TNode>(BinaryHeap<PathfindingNode> binaryHeapOpenList, IPathfindingGrid<TNode> grid, PathfindingNode currentNode, PathfindingNode destinationNode, int maxIterations, int currentIteration) where TNode : PathfindingNode
         {
             if (destinationNode.WasVisited && destinationNode.RunId == runId)
             {
@@ -43,9 +44,9 @@ namespace SpaceCentipedeFromHell
             }
 
             currentNode.WasVisited = true;
-
+            
             var adjacentNodes = currentNode.GetAdjacentNodes();
-
+            
             for (int i = 0; i < adjacentNodes.Length; i++)
             {
                 var adjacentNode = adjacentNodes[i];
@@ -81,7 +82,7 @@ namespace SpaceCentipedeFromHell
                 }
             }
 
-            if (binaryHeapOpenList.IsEmpty || currentVisited + 1 > nodeSearchLimit)
+            if (binaryHeapOpenList.IsEmpty || currentIteration + 1 > maxIterations)
             {
                 return null;
             }
@@ -89,7 +90,7 @@ namespace SpaceCentipedeFromHell
             var nodeWithLowestCostOnHeap = binaryHeapOpenList.Pop();
             nodeWithLowestCostOnHeap.IsOnOpenList = false;
 
-            return FindNextNode(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap, destinationNode, nodeSearchLimit, ++currentVisited);
+            return FindNextNode(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap, destinationNode, maxIterations, ++currentIteration);
         }
     }
 }

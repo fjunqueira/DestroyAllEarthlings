@@ -9,7 +9,7 @@ namespace SpaceCentipedeFromHell
     /// </summary>
     public class NavigationMesh
     {
-        private Dictionary<Triangle, IEnumerable<Triangle>> adjacencyMap;
+        private Dictionary<Triangle, Triangle[]> adjacencyMap;
 
         public NavigationMesh(MeshFilter filter, MeshNormalizer normalizer)
         {
@@ -19,11 +19,11 @@ namespace SpaceCentipedeFromHell
 
             var triangles = normalizedMesh.Triangles.ChunksOf(3).ToList();
 
-            this.adjacencyMap = triangles.Select(triangle => new KeyValuePair<Triangle, IEnumerable<Triangle>>(
+            this.adjacencyMap = triangles.Select(triangle => new KeyValuePair<Triangle, Triangle[]>(
                 new Triangle(IndexToVertex(triangle, normalizedMesh)),
                 triangles.Where(otherTriangle => HasCommonVertices(otherTriangle, triangle))
                 .Select(otherTriangle =>
-                    new Triangle(IndexToVertex(otherTriangle, normalizedMesh))))).ToDictionary();
+                    new Triangle(IndexToVertex(otherTriangle, normalizedMesh))).ToArray())).ToDictionary();
         }
 
         private bool HasCommonVertices(IEnumerable<int> otherTriangle, IEnumerable<int> triangle)
@@ -39,7 +39,7 @@ namespace SpaceCentipedeFromHell
             return indexes.Select(verticeIndex => mesh.Vertices.ElementAt(verticeIndex));
         }
 
-        public Dictionary<Triangle, IEnumerable<Triangle>> AdjacencyMap
+        public Dictionary<Triangle, Triangle[]> AdjacencyMap
         {
             get { return this.adjacencyMap; }
         }

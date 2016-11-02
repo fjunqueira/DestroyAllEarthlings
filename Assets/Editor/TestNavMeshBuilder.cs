@@ -23,7 +23,7 @@ namespace SpaceCentipedeFromHell.Tests
             return new NavigationMesh(meshFilter, new MeshNormalizer());
         }
 
-		public static IOrderedEnumerable<IGrouping<int, KeyValuePair<Triangle, IEnumerable<Triangle>>>> GetSizes(NavigationMesh navMesh)
+		public static IOrderedEnumerable<IGrouping<int, KeyValuePair<Triangle, Triangle[]>>> GetSizes(NavigationMesh navMesh)
         {
             return navMesh.AdjacencyMap.GroupBy(x => x.Value.Count()).OrderByDescending(x => x.Key);
 		}

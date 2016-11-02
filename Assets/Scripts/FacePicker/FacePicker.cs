@@ -45,10 +45,6 @@ namespace SpaceCentipedeFromHell
             p1 = hitTransform.TransformPoint(p1);
             p2 = hitTransform.TransformPoint(p2);
 
-            Debug.DrawLine(p0, p1, Color.black, float.PositiveInfinity, false);
-            Debug.DrawLine(p1, p2, Color.black, float.PositiveInfinity, false);
-            Debug.DrawLine(p2, p0, Color.black, float.PositiveInfinity, false);
-
             return new Triangle(p0, p1, p2);
         }
     }

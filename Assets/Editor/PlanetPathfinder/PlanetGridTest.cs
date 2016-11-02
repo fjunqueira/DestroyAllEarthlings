@@ -9,7 +9,7 @@ namespace SpaceCentipedeFromHell.Tests
     ///</summary>
     public class PlanetGridTest
     {
-        public static List<IGrouping<int, KeyValuePair<PlanetNode, IEnumerable<PlanetNode>>>> GetSizes(PlanetGrid navMesh)
+        public static List<IGrouping<int, KeyValuePair<PlanetNode, PlanetNode[]>>> GetSizes(PlanetGrid navMesh)
         {
             return navMesh.AdjacencyIndexing.GroupBy(x => x.Value.Count()).ToList().OrderByDescending(x => x.Key).ToList();
         }

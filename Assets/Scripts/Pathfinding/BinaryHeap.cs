@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 namespace SpaceCentipedeFromHell
 {
@@ -72,6 +73,8 @@ namespace SpaceCentipedeFromHell
 
         public T Remove(T obj)
         {
+            Debug.Log("Remove was called.");
+
             if (this.IsEmpty)
             {
                 throw new Exception("Binary Heap is empty.");

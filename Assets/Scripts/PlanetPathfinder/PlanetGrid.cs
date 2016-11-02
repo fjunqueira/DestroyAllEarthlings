@@ -8,7 +8,7 @@ namespace SpaceCentipedeFromHell
     {
         private float planetRadius;
 
-        private Dictionary<PlanetNode, IEnumerable<PlanetNode>> adjacencyIndexing = new Dictionary<PlanetNode, IEnumerable<PlanetNode>>();
+        private Dictionary<PlanetNode, PlanetNode[]> adjacencyIndexing = new Dictionary<PlanetNode, PlanetNode[]>();
 
         private Dictionary<Vector3, PlanetNode> positionIndexing = new Dictionary<Vector3, PlanetNode>();
 
@@ -16,22 +16,24 @@ namespace SpaceCentipedeFromHell
         {
             this.planetRadius = planetRadius;
 
-            var keys = navMesh.AdjacencyMap.Keys.Select(key => new PlanetNode(this, key)).ToList();
+            var keys = navMesh.AdjacencyMap.Keys.Select(key => new PlanetNode(this, key)).ToArray();
 
             // This is needed because each node reference must be unique for the pathfinder
             var values = navMesh.AdjacencyMap.Values.Select(adjacentTriangles =>
-                keys.Where(planetNode => adjacentTriangles.Contains(planetNode.Triangle))).ToList();
+                keys.Where(planetNode => adjacentTriangles.Contains(planetNode.Triangle)).ToArray()).ToArray();
 
             for (int i = 0; i < keys.Count(); i++) this.adjacencyIndexing.Add(keys[i], values[i]);
 
             this.positionIndexing = keys.ToDictionary(x => x.Position);
+
+            this.Size = keys.Count();
         }
 
-        public Dictionary<PlanetNode, IEnumerable<PlanetNode>> AdjacencyIndexing { get { return this.adjacencyIndexing; } }
+        public Dictionary<PlanetNode, PlanetNode[]> AdjacencyIndexing { get { return this.adjacencyIndexing; } }
 
-        public Dictionary<Vector3, PlanetNode> PositionIndexing { get {Debug.Log("AAAAAAAAAAAAAAAAAAA"); return this.positionIndexing; } }
+        public Dictionary<Vector3, PlanetNode> PositionIndexing { get { return this.positionIndexing; } }
 
-        public int Size { get { return this.adjacencyIndexing.Keys.Count; } }
+        public int Size { get; private set; }
 
         public float GetHeuristic(PlanetNode from, PlanetNode to)
         {
@@ -49,7 +51,7 @@ namespace SpaceCentipedeFromHell
             return Mathf.Atan2(Vector3.Cross(from.Position.normalized, to.Position.normalized).magnitude, Vector3.Dot(from.Position.normalized, to.Position.normalized)) * this.planetRadius;
         }
 
-        public IEnumerable<PlanetNode> GetNodesAdjacentTo(PlanetNode node)
+        public PlanetNode[] GetNodesAdjacentTo(PlanetNode node)
         {
             return this.adjacencyIndexing[node];
         }

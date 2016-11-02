@@ -19,7 +19,22 @@ namespace SpaceCentipedeFromHell
 
         public override PathfindingNode[] GetAdjacentNodes()
         {
-            return this.PlanetGrid.GetNodesAdjacentTo(this).ToArray();
+            return this.PlanetGrid.GetNodesAdjacentTo(this);
+        }
+        public override int GetHashCode()
+        {
+            return this.Triangle.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            var otherNode = obj as PlanetNode;
+
+            if (otherNode == null) return false;
+
+            return this.Triangle.Equals(otherNode.Triangle);
         }
     }
 }

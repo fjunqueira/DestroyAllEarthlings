@@ -26,16 +26,13 @@ namespace SpaceCentipedeFromHell
         {
             if (firstNode != null && secondNode != null && doonce)
             {
-                Debug.Log("Finding path..");
                 var path = this.grid.FindPath(firstNode, secondNode);
-                Debug.Log("Found path!");
 
                 foreach (var node in path.Select(x => x as PlanetNode))
                 {
-                    Debug.Log("Drawing lines");
-                    Debug.DrawLine(node.Triangle.A, node.Triangle.B, Color.black, float.PositiveInfinity, false);
-                    Debug.DrawLine(node.Triangle.B, node.Triangle.C, Color.black, float.PositiveInfinity, false);
-                    Debug.DrawLine(node.Triangle.C, node.Triangle.A, Color.black, float.PositiveInfinity, false);
+                    Debug.DrawLine(node.Triangle.A, node.Triangle.B, Color.black, 10, false);
+                    Debug.DrawLine(node.Triangle.B, node.Triangle.C, Color.black, 10, false);
+                    Debug.DrawLine(node.Triangle.C, node.Triangle.A, Color.black, 10, false);
                 }
                 doonce = false;
             }
@@ -50,15 +47,25 @@ namespace SpaceCentipedeFromHell
                     return;
                 }
 
+                Debug.DrawLine(triangle.A, triangle.B, Color.black, 10, false);
+                Debug.DrawLine(triangle.B, triangle.C, Color.black, 10, false);
+                Debug.DrawLine(triangle.C, triangle.A, Color.black, 10, false);
+
                 if (this.firstNode == null)
                 {
                     Debug.Log("Setting first node.");
                     this.firstNode = this.grid.PositionIndexing[triangle.Centroid];
                 }
-                else
+                else if (this.secondNode == null)
                 {
                     Debug.Log("Setting second node.");
                     this.secondNode = this.grid.PositionIndexing[triangle.Centroid];
+                }
+                else
+                {
+                    this.firstNode = this.grid.PositionIndexing[triangle.Centroid];
+                    this.secondNode = null;
+                    this.doonce = true;
                 }
             }
         }
