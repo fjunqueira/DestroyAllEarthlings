@@ -1,6 +1,8 @@
-﻿namespace SpaceCentipedeFromHell.Tests
+﻿using System;
+
+namespace SpaceCentipedeFromHell.Tests
 {
-    public class TestObject
+    public class TestObject : IHeapItem
     {
         public TestObject(int value)
         {
@@ -8,5 +10,7 @@
         }
 
         public int Value { get; set; }
+
+        public int HeapIndex { get; set; }
     }
 }

@@ -8,18 +8,18 @@ public class BinaryHeapTests
         [Test]
         public void AssertThatSmallestValueIsOnTop()
         {
-            var heap = new BinaryHeap<int?>(10, new NullableIntegerComparer());
+            var heap = new BinaryHeap<HeapInt>(10, new HeapIntComparer());
 
-            heap.Push(90);
-            heap.Push(75);
-            heap.Push(1243);
-            heap.Push(10);
-            heap.Push(56);
-            heap.Push(22);
-            heap.Push(75);
-            heap.Push(754);
-            heap.Push(77765);
-            heap.Push(45675);
+            heap.Push((HeapInt)90);
+            heap.Push((HeapInt)75);
+            heap.Push((HeapInt)1243);
+            heap.Push((HeapInt)10);
+            heap.Push((HeapInt)56);
+            heap.Push((HeapInt)22);
+            heap.Push((HeapInt)75);
+            heap.Push((HeapInt)754);
+            heap.Push((HeapInt)77765);
+            heap.Push((HeapInt)45675);
 
             Assert.AreEqual(10, heap.Pop());
         }
@@ -102,25 +102,25 @@ public class BinaryHeapTests
         [ExpectedException(typeof(Exception))]
         public void AssertThatFullExceptionIsThrown()
         {
-            var heap = new BinaryHeap<int?>(10, new NullableIntegerComparer());
+            var heap = new BinaryHeap<HeapInt>(10, new HeapIntComparer());
 
-            heap.Push(90);
-            heap.Push(75);
-            heap.Push(1243);
-            heap.Push(10);
-            heap.Push(56);
-            heap.Push(22);
-            heap.Push(75);
-            heap.Push(58);
-            heap.Push(97);
-            heap.Push(753);
-            heap.Push(54675);
+            heap.Push((HeapInt)90);
+            heap.Push((HeapInt)75);
+            heap.Push((HeapInt)1243);
+            heap.Push((HeapInt)10);
+            heap.Push((HeapInt)56);
+            heap.Push((HeapInt)22);
+            heap.Push((HeapInt)75);
+            heap.Push((HeapInt)58);
+            heap.Push((HeapInt)97);
+            heap.Push((HeapInt)753);
+            heap.Push((HeapInt)54675);
         }
 
         [Test]
         public void AssertThatHeapIsEmpty()
         {
-            var heap = new BinaryHeap<int?>(10, new NullableIntegerComparer());
+            var heap = new BinaryHeap<HeapInt>(10, new HeapIntComparer());
 
             Assert.IsTrue(heap.IsEmpty);
         }
@@ -129,7 +129,7 @@ public class BinaryHeapTests
         [ExpectedException(typeof(Exception))]
         public void AssertThatPoppingEmptyHeapThrowsException()
         {
-            var heap = new BinaryHeap<int?>(10, new NullableIntegerComparer());
+            var heap = new BinaryHeap<HeapInt>(10, new HeapIntComparer());
 
             heap.Pop();
         }
@@ -137,16 +137,16 @@ public class BinaryHeapTests
         [Test]
         public void AssertThatPoppingHeapUntilEmptyWorks()
         {
-            var heap = new BinaryHeap<int?>(10, new NullableIntegerComparer());
+            var heap = new BinaryHeap<HeapInt>(10, new HeapIntComparer());
 
-            heap.Push(10);
-            heap.Push(17);
-            heap.Push(20);
-            heap.Push(30);
-            heap.Push(38);
-            heap.Push(30);
-            heap.Push(24);
-            heap.Push(34);
+            heap.Push((HeapInt)10);
+            heap.Push((HeapInt)17);
+            heap.Push((HeapInt)20);
+            heap.Push((HeapInt)30);
+            heap.Push((HeapInt)38);
+            heap.Push((HeapInt)30);
+            heap.Push((HeapInt)24);
+            heap.Push((HeapInt)34);
 
             var firstItem = heap.Pop();
 
@@ -161,18 +161,18 @@ public class BinaryHeapTests
         [Test]
         public void AssertThatPopAlwaysReturnsSmallestValue()
         {
-            var heap = new BinaryHeap<int?>(10, new NullableIntegerComparer());
+            var heap = new BinaryHeap<HeapInt>(10, new HeapIntComparer());
 
-            heap.Push(90);
-            heap.Push(75);
-            heap.Push(1243);
-            heap.Push(10);
-            heap.Push(56);
-            heap.Push(75);
-            heap.Push(75);
-            heap.Push(97);
-            heap.Push(753);
-            heap.Push(54675);
+            heap.Push((HeapInt)90);
+            heap.Push((HeapInt)75);
+            heap.Push((HeapInt)1243);
+            heap.Push((HeapInt)10);
+            heap.Push((HeapInt)56);
+            heap.Push((HeapInt)75);
+            heap.Push((HeapInt)75);
+            heap.Push((HeapInt)97);
+            heap.Push((HeapInt)753);
+            heap.Push((HeapInt)54675);
 
             var result = new int?[10];
             var index = 0;

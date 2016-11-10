@@ -34,6 +34,8 @@ namespace SpaceCentipedeFromHell.Tests
             get { return this.size; }
         }
 
+        public Guid RunId { get; set; }
+
         public float GetHeuristic(SquareNode from, SquareNode to)
         {
             var rowMovementAmmount = Math.Abs(to.RowIndex - from.RowIndex);
