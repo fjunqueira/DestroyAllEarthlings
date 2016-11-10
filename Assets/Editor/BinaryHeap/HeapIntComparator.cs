@@ -2,9 +2,9 @@
 
 namespace SpaceCentipedeFromHell.Tests
 {
-    public class NullableIntegerComparer : IComparer<int?>
+    public class HeapIntComparer : IComparer<HeapInt>
     {
-        public int Compare(int? x, int? y)
+        public int Compare(HeapInt x, HeapInt y)
         {
             if (x == y)
             {

@@ -1,73 +1,49 @@
 ﻿using System.Linq;
 using UnityEngine;
 using Zenject;
+using UniRx;
+using System;
 
 namespace SpaceCentipedeFromHell
 {
     public class PlanetComponent : MonoBehaviour
     {
-        private PlanetGrid grid;
-
-        private FacePicker picker;
-
-        private PlanetNode firstNode = null;
-
-        private PlanetNode secondNode = null;
+        private static Vector3 origin = new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
 
         [Inject]
         public void Construct(PlanetGrid grid, FacePicker facePicker)
         {
-            this.picker = facePicker;
-            this.grid = grid;
-        }
+            var everyUpdate = Observable.EveryUpdate();
 
-        private bool doonce = true;
-        private void Update()
-        {
-            if (firstNode != null && secondNode != null && doonce)
-            {
-                var path = this.grid.FindPath(firstNode, secondNode);
+            everyUpdate
+                .Where(_ => Input.GetButtonDown("Fire1"))
+                .Select(_ => facePicker.Pick(Input.mousePosition))
+                .Where(triangle => triangle != null)
+                .Buffer(2)
+                .Subscribe(triangles =>
+                {
+                    var startingNode = grid.PositionIndexing[triangles.First().Centroid];
+                    var endingNode = grid.PositionIndexing[triangles.Last().Centroid];
 
-                foreach (var node in path.Select(x => x as PlanetNode))
-                {
-                    Debug.DrawLine(node.Triangle.A, node.Triangle.B, Color.black, 10, false);
-                    Debug.DrawLine(node.Triangle.B, node.Triangle.C, Color.black, 10, false);
-                    Debug.DrawLine(node.Triangle.C, node.Triangle.A, Color.black, 10, false);
-                }
-                doonce = false;
-            }
-            else if (Input.GetButtonDown("Fire1"))
-            {
-                Debug.Log("Picking");
-                var triangle = this.picker.Pick(Input.mousePosition);
+                    var path = grid.FindPath(startingNode, endingNode);
 
-                if (triangle == null)
-                {
-                    Debug.Log("Triangle is null");
-                    return;
-                }
+                    foreach (var node in path.Select(x => x as PlanetNode))
+                    {
+                        Debug.DrawLine(node.Triangle.A, node.Triangle.B, Color.black, 10, false);
+                        Debug.DrawLine(node.Triangle.B, node.Triangle.C, Color.black, 10, false);
+                        Debug.DrawLine(node.Triangle.C, node.Triangle.A, Color.black, 10, false);
+                    }
+                });
 
-                Debug.DrawLine(triangle.A, triangle.B, Color.black, 10, false);
-                Debug.DrawLine(triangle.B, triangle.C, Color.black, 10, false);
-                Debug.DrawLine(triangle.C, triangle.A, Color.black, 10, false);
-
-                if (this.firstNode == null)
+            everyUpdate
+                .Where(_ => Input.GetButton("Fire2"))
+                .Select(_ => (Input.mousePosition - origin).normalized)
+                .Subscribe(position =>
                 {
-                    Debug.Log("Setting first node.");
-                    this.firstNode = this.grid.PositionIndexing[triangle.Centroid];
-                }
-                else if (this.secondNode == null)
-                {
-                    Debug.Log("Setting second node.");
-                    this.secondNode = this.grid.PositionIndexing[triangle.Centroid];
-                }
-                else
-                {
-                    this.firstNode = this.grid.PositionIndexing[triangle.Centroid];
-                    this.secondNode = null;
-                    this.doonce = true;
-                }
-            }
+                    transform.rotation = Quaternion.AngleAxis(-position.x, Vector3.up) *
+                                         Quaternion.AngleAxis(position.y, Vector3.right) *
+                                         transform.rotation;
+                });
         }
     }
 }

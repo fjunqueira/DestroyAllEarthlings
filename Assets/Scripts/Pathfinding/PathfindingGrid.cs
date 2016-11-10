@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System;
-using UnityEngine;
 
 namespace SpaceCentipedeFromHell
 {
     public static class PathfindingGrid
     {
-        private static Guid runId;
         private static PathfindingNodeComparator comparator = new PathfindingNodeComparator();
 
         public static PathfindingNode[] FindPath<TNode>(this IPathfindingGrid<TNode> grid, PathfindingNode startingNode, PathfindingNode destinationNode) where TNode : PathfindingNode
@@ -16,11 +14,11 @@ namespace SpaceCentipedeFromHell
 
         public static PathfindingNode[] FindPath<TNode>(this IPathfindingGrid<TNode> grid, PathfindingNode startingNode, PathfindingNode destinationNode, int maxIterations) where TNode : PathfindingNode
         {
-            runId = Guid.NewGuid();
+            grid.RunId = Guid.NewGuid();
 
             var binaryHeapOpenList = new BinaryHeap<PathfindingNode>(grid.Size, comparator);
 
-            startingNode.ResetInfo(runId);
+            startingNode.ResetInfo(grid.RunId);
 
             var currentNode = FindNextNode(binaryHeapOpenList, grid, startingNode, destinationNode, maxIterations, 0);
 
@@ -38,7 +36,7 @@ namespace SpaceCentipedeFromHell
 
         private static PathfindingNode FindNextNode<TNode>(BinaryHeap<PathfindingNode> binaryHeapOpenList, IPathfindingGrid<TNode> grid, PathfindingNode currentNode, PathfindingNode destinationNode, int maxIterations, int currentIteration) where TNode : PathfindingNode
         {
-            if (destinationNode.WasVisited && destinationNode.RunId == runId)
+            if (destinationNode.WasVisited && destinationNode.RunId == grid.RunId)
             {
                 return destinationNode;
             }
@@ -51,11 +49,11 @@ namespace SpaceCentipedeFromHell
             {
                 var adjacentNode = adjacentNodes[i];
 
-                if (adjacentNode != null && adjacentNode.IsWalkable && (!adjacentNode.WasVisited || adjacentNode.RunId != runId))
+                if (adjacentNode != null && adjacentNode.IsWalkable && (!adjacentNode.WasVisited || adjacentNode.RunId != grid.RunId))
                 {
-                    if (!adjacentNode.IsOnOpenList || adjacentNode.RunId != runId)
+                    if (!adjacentNode.IsOnOpenList || adjacentNode.RunId != grid.RunId)
                     {
-                        adjacentNode.RunId = runId;
+                        adjacentNode.RunId = grid.RunId;
                         adjacentNode.ParentNode = currentNode;
 
                         adjacentNode.G = currentNode.G + grid.GetPartialPathCost((TNode)currentNode, (TNode)adjacentNode);
@@ -65,7 +63,7 @@ namespace SpaceCentipedeFromHell
                         binaryHeapOpenList.Push(adjacentNode);
                         adjacentNode.IsOnOpenList = true;
                     }
-                    else if (adjacentNode.IsOnOpenList && adjacentNode.RunId == runId)
+                    else if (adjacentNode.IsOnOpenList && adjacentNode.RunId == grid.RunId)
                     {
                         var g = currentNode.G + grid.GetPartialPathCost((TNode)currentNode, (TNode)adjacentNode);
 

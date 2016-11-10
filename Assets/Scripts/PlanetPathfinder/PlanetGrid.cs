@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 namespace SpaceCentipedeFromHell
 {
@@ -28,6 +29,8 @@ namespace SpaceCentipedeFromHell
 
             this.Size = keys.Count();
         }
+
+        public Guid RunId { get; set; }
 
         public Dictionary<PlanetNode, PlanetNode[]> AdjacencyIndexing { get { return this.adjacencyIndexing; } }
 

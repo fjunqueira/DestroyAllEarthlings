@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SpaceCentipedeFromHell
 {
-    public class BinaryHeap<T>
+    public class BinaryHeap<T> where T : IHeapItem
     {
         private T[] heap;
 
@@ -44,7 +44,7 @@ namespace SpaceCentipedeFromHell
                 throw new Exception("Binary Heap is full.");
             }
 
-            this.heap[this.lastPositionAvaliable] = item;
+            this.PlaceAt(this.lastPositionAvaliable, item);
 
             this.Push(this.lastPositionAvaliable);
 
@@ -60,9 +60,9 @@ namespace SpaceCentipedeFromHell
 
             var item = this.heap[1];
 
-            this.heap[1] = this.heap[this.LastPosition];
+            this.PlaceAt(1, this.heap[this.LastPosition]);
 
-            this.heap[this.LastPosition] = default(T);
+            this.PlaceAt(this.LastPosition, default(T));
 
             this.lastPositionAvaliable--;
 
@@ -73,32 +73,22 @@ namespace SpaceCentipedeFromHell
 
         public T Remove(T obj)
         {
-            Debug.Log("Remove was called.");
-
             if (this.IsEmpty)
             {
                 throw new Exception("Binary Heap is empty.");
             }
 
-            for (int i = 1; i < this.heap.Length; i++)
-            {
-                if (this.comparer.Compare(this.heap[i], obj) == 0)
-                {
-                    var item = this.heap[i];
+            var item = this.heap[obj.HeapIndex];
 
-                    this.heap[i] = this.heap[this.LastPosition];
+            this.PlaceAt(obj.HeapIndex, this.heap[this.LastPosition]);
 
-                    this.heap[this.LastPosition] = default(T);
+            this.PlaceAt(this.LastPosition, default(T));
 
-                    this.lastPositionAvaliable--;
+            this.lastPositionAvaliable--;
 
-                    this.Pop(i);
+            this.Pop(obj.HeapIndex);
 
-                    return item;
-                }
-            }
-
-            throw new Exception("Object not found.");
+            return item;
         }
 
         public T Peek()
@@ -139,15 +129,15 @@ namespace SpaceCentipedeFromHell
 
             if ((this.comparer.Compare(leftChild, rightChild) <= 0) || object.Equals(rightChild, default(T)))
             {
-                this.heap[index] = leftChild;
-                this.heap[leftChildIndex] = item;
+                this.PlaceAt(index, leftChild);
+                this.PlaceAt(leftChildIndex, item);
 
                 this.Pop(leftChildIndex);
             }
             else if (this.comparer.Compare(rightChild, leftChild) < 0)
             {
-                this.heap[index] = rightChild;
-                this.heap[rightChildIndex] = item;
+                this.PlaceAt(index, rightChild);
+                this.PlaceAt(rightChildIndex, item);
 
                 this.Pop(rightChildIndex);
             }
@@ -163,11 +153,18 @@ namespace SpaceCentipedeFromHell
 
             if (this.comparer.Compare(item, parent) < 0)
             {
-                this.heap[index] = parent;
-                this.heap[parentIndex] = item;
+                this.PlaceAt(index, parent);
+                this.PlaceAt(parentIndex, item);
 
                 this.Push(parentIndex);
             }
+        }
+
+        private void PlaceAt(int index, T value)
+        {
+            if (!object.Equals(value, default(T))) value.HeapIndex = index;
+
+            this.heap[index] = value;
         }
 
         private int GetRightChildPosition(int index)

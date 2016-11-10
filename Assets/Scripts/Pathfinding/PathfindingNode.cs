@@ -3,14 +3,19 @@ using System;
 
 namespace SpaceCentipedeFromHell
 {
-    public abstract class PathfindingNode
+    public abstract class PathfindingNode : IHeapItem
     {
+
+        private float weight;
+
         public PathfindingNode()
         {
             this.IsWalkable = true;
         }
 
-        private float weight;
+        public abstract Vector3 Position { get; }
+
+        public abstract PathfindingNode[] GetAdjacentNodes();
 
         public float Weight
         {
@@ -20,9 +25,19 @@ namespace SpaceCentipedeFromHell
             }
         }
 
+        public int HeapIndex { get; set; }
+
         public bool IsWalkable { get; set; }
 
-        public abstract Vector3 Position { get; }
+        public void RaiseWeight(float raise)
+        {
+            this.weight += raise;
+        }
+
+        public void DecreaseWeight(float decrease)
+        {
+            this.weight -= decrease;
+        }
 
         internal bool WasVisited { get; set; }
 
@@ -43,18 +58,6 @@ namespace SpaceCentipedeFromHell
         internal Guid RunId { get; set; }
 
         internal PathfindingNode ParentNode { get; set; }
-
-        public void RaiseWeight(float raise)
-        {
-            this.weight += raise;
-        }
-
-        public void DecreaseWeight(float decrease)
-        {
-            this.weight -= decrease;
-        }
-
-        public abstract PathfindingNode[] GetAdjacentNodes();
 
         internal void ResetInfo(Guid newRunId)
         {
