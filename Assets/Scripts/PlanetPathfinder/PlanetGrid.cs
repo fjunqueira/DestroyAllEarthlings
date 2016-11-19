@@ -25,7 +25,7 @@ namespace SpaceCentipedeFromHell
 
             for (int i = 0; i < keys.Count(); i++) this.adjacencyIndexing.Add(keys[i], values[i]);
 
-            this.positionIndexing = keys.ToDictionary(x => x.Position);
+            this.positionIndexing = keys.ToDictionary(x => x.Position.RoundTo(3));
 
             this.Size = keys.Count();
         }
@@ -34,9 +34,20 @@ namespace SpaceCentipedeFromHell
 
         public Dictionary<PlanetNode, PlanetNode[]> AdjacencyIndexing { get { return this.adjacencyIndexing; } }
 
-        public Dictionary<Vector3, PlanetNode> PositionIndexing { get { return this.positionIndexing; } }
-
         public int Size { get; private set; }
+
+        ///<summary>
+        /// Returns the node at the given position, null if none was found
+        ///</summary>
+        public PlanetNode GetNodeByPosition(Vector3 position)
+        {
+            PlanetNode result;
+
+            if (this.positionIndexing.TryGetValue(position.RoundTo(3), out result)) return result;
+
+            Debug.Log("Warning! Key not found. GetNodeByPosition");
+            return null;
+        }
 
         public float GetHeuristic(PlanetNode from, PlanetNode to)
         {

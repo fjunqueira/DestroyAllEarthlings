@@ -17,21 +17,20 @@ namespace SpaceCentipedeFromHell
 
             everyUpdate
                 .Where(_ => Input.GetButtonDown("Fire1"))
-                .Select(_ => facePicker.Pick(Input.mousePosition))
-                .Where(triangle => triangle != null)
+                .Select(_ => facePicker.Pick(Input.mousePosition)).Where(triangle => triangle != null)
+                .Select(triangle => grid.GetNodeByPosition(Quaternion.Inverse(this.transform.rotation) * triangle.Centroid)).Where(node => node != null)
                 .Buffer(2)
-                .Subscribe(triangles =>
+                .Subscribe(nodes =>
                 {
-                    var startingNode = grid.PositionIndexing[triangles.First().Centroid];
-                    var endingNode = grid.PositionIndexing[triangles.Last().Centroid];
+                    var inverseRotation = Quaternion.Inverse(this.transform.rotation);
 
-                    var path = grid.FindPath(startingNode, endingNode);
+                    var path = grid.FindPath(nodes.First(), nodes.Last());
 
                     foreach (var node in path.Select(x => x as PlanetNode))
                     {
-                        Debug.DrawLine(node.Triangle.A, node.Triangle.B, Color.black, 10, false);
-                        Debug.DrawLine(node.Triangle.B, node.Triangle.C, Color.black, 10, false);
-                        Debug.DrawLine(node.Triangle.C, node.Triangle.A, Color.black, 10, false);
+                        Debug.DrawLine(this.transform.rotation * node.Triangle.A, this.transform.rotation * node.Triangle.B, Color.black, 10, false);
+                        Debug.DrawLine(this.transform.rotation * node.Triangle.B, this.transform.rotation * node.Triangle.C, Color.black, 10, false);
+                        Debug.DrawLine(this.transform.rotation * node.Triangle.C, this.transform.rotation * node.Triangle.A, Color.black, 10, false);
                     }
                 });
 
