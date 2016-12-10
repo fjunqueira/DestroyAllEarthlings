@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 namespace SpaceCentipedeFromHell
 {
+    [Serializable]
     public class Triangle
     {
         public Triangle(IEnumerable<Vector3> vertices)

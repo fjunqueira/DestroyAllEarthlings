@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using UnityEngine;
+using System;
 
 namespace SpaceCentipedeFromHell
 {
+    [Serializable]
     public class PlanetNode : PathfindingNode
     {
         public PlanetNode(PlanetGrid grid, Triangle triangle)

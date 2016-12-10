@@ -5,6 +5,7 @@ using System;
 
 namespace SpaceCentipedeFromHell
 {
+    [Serializable]
     public class PlanetGrid : IPathfindingGrid<PlanetNode>
     {
         private float planetRadius;

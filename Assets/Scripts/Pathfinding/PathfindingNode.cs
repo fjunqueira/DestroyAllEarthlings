@@ -3,6 +3,7 @@ using System;
 
 namespace SpaceCentipedeFromHell
 {
+    [Serializable]
     public abstract class PathfindingNode : IHeapItem
     {
 

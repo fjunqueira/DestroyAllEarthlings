@@ -1,3 +1,6 @@
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using Zenject;
 
@@ -10,15 +13,27 @@ namespace SpaceCentipedeFromHell
 
         public override void InstallBindings()
         {
-            Container.BindInstance(settings.PlanetRadius);
-            Container.Bind<PlanetGrid>().AsSingle();
+            using (var stream = new FileStream(settings.GridPath, FileMode.Open))
+            {
+                var surrogateSelector = new SurrogateSelector();
+
+                surrogateSelector.AddSurrogate(typeof(Vector3),
+                                new StreamingContext(StreamingContextStates.All),
+                                new Vector3SerializationSurrogate());
+
+                var formatter = new BinaryFormatter()
+                {
+                    SurrogateSelector = surrogateSelector
+                };
+
+                Container.Bind<PlanetGrid>().FromInstance(formatter.Deserialize(stream) as PlanetGrid);
+            }
         }
 
         [System.Serializable]
         public class Settings
         {
-            public NavigationMesh NavigationMesh;
-            public float PlanetRadius;
+            public string GridPath;
         }
     }
 }
