@@ -22,8 +22,6 @@ namespace SpaceCentipedeFromHell
                 .Buffer(2)
                 .Subscribe(nodes =>
                 {
-                    var inverseRotation = Quaternion.Inverse(this.transform.rotation);
-
                     var path = grid.FindPath(nodes.First(), nodes.Last());
 
                     foreach (var node in path.Select(x => x as PlanetNode))

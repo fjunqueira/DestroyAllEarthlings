@@ -11,26 +11,60 @@ namespace SpaceCentipedeFromHell.EditorExtensions
     [CustomEditor(typeof(PlanetComponent))]
     public class PlanetEditor : Editor
     {
-        private int planetRadius;
+        private int gridRadius;
 
         private string gridPath;
 
         private PlanetComponent planet;
-
-        private string status = "Ready!";
 
         public void OnEnable()
         {
             this.planet = (PlanetComponent)target;
 
             gridPath = EditorPrefs.GetString("PathfindingExporter_GridName", gridPath);
-            planetRadius = EditorPrefs.GetInt("PathfindingExporter_PlanetRadius", planetRadius);
+            gridRadius = EditorPrefs.GetInt("PathfindingExporter_GridRadius", gridRadius);
+
+            SceneView.onSceneGUIDelegate = Update;
+        }
+
+        private static Vector3 origin = new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
+
+        bool pressing = false;
+
+        public void Update(SceneView sceneview)
+        {
+            var currentEvent = Event.current;
+            // var position = (new Vector3(currentEvent.mousePosition.x, currentEvent.mousePosition.y) - origin).normalized;
+
+            // planet.transform.rotation = Quaternion.AngleAxis(-position.x, Vector3.up) *
+            //      Quaternion.AngleAxis(position.y, Vector3.right) *
+            //      planet.transform.rotation;
+            if (currentEvent.isMouse && currentEvent.clickCount == 1)
+            {
+                GameObject obj;
+
+                Object prefab = PrefabUtility.GetPrefabParent(Selection.activeObject);
+
+                if (prefab != null)
+                {
+                    Ray ray = HandleUtility.GUIPointToWorldRay(currentEvent.mousePosition);
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        obj = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+                        obj.transform.position = hit.point;
+                        obj.transform.up = hit.normal;
+                        //hit.normal
+                    }
+                }
+            }
         }
 
         public void OnDisable()
         {
             EditorPrefs.SetString("PathfindingExporter_GridName", gridPath);
-            EditorPrefs.SetInt("PathfindingExporter_PlanetRadius", planetRadius);
+            EditorPrefs.SetInt("PathfindingExporter_GridRadius", gridRadius);
         }
 
         private void GridName()
@@ -45,7 +79,7 @@ namespace SpaceCentipedeFromHell.EditorExtensions
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(" Grid Radius ");
-            planetRadius = EditorGUILayout.IntField(planetRadius);
+            gridRadius = EditorGUILayout.IntField(gridRadius);
             GUILayout.EndHorizontal();
         }
 
@@ -56,34 +90,38 @@ namespace SpaceCentipedeFromHell.EditorExtensions
 
             GUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Export Grid"))
-            {
-                var navigationMesh = new NavigationMesh(
-                    planet.GetComponent<MeshFilter>(), new MeshNormalizer());
+            if (GUILayout.Button("Export Grid")) ExportGrid();
 
-                var planetGrid = new PlanetGrid(
-                    navigationMesh, planetRadius);
-
-                using (var stream = new FileStream(gridPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    var surrogateSelector = new SurrogateSelector();
-
-                    surrogateSelector.AddSurrogate(typeof(Vector3),
-                                    new StreamingContext(StreamingContextStates.All),
-                                    new Vector3SerializationSurrogate());
-
-                    var formatter = new BinaryFormatter()
-                    {
-                        SurrogateSelector = surrogateSelector
-                    };
-
-                    formatter.Serialize(stream, planetGrid);
-
-                    this.status = "Exported successfully!";
-                }
-            }
             GUILayout.EndHorizontal();
-            GUILayout.Label(this.status);
+        }
+
+        public void ExportGrid()
+        {
+            Debug.Log("Exporting, this may take a while...");
+
+            var navigationMesh = new NavigationMesh(
+                planet.GetComponent<MeshFilter>(), new MeshNormalizer());
+
+            var planetGrid = new PlanetGrid(
+                navigationMesh, gridRadius);
+
+            using (var stream = new FileStream(gridPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                var surrogateSelector = new SurrogateSelector();
+
+                surrogateSelector.AddSurrogate(typeof(Vector3),
+                                new StreamingContext(StreamingContextStates.All),
+                                new Vector3SerializationSurrogate());
+
+                var formatter = new BinaryFormatter()
+                {
+                    SurrogateSelector = surrogateSelector
+                };
+
+                formatter.Serialize(stream, planetGrid);
+
+                Debug.Log("Exported successfully!");
+            }
         }
     }
 }
