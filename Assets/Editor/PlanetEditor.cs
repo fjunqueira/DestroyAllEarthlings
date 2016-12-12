@@ -5,6 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Runtime.Serialization;
 using SpaceCentipedeFromHell;
+using System;
 
 namespace SpaceCentipedeFromHell.EditorExtensions
 {
@@ -17,6 +18,8 @@ namespace SpaceCentipedeFromHell.EditorExtensions
 
         private PlanetComponent planet;
 
+        private static Vector3 origin = new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
+
         public void OnEnable()
         {
             this.planet = (PlanetComponent)target;
@@ -24,41 +27,43 @@ namespace SpaceCentipedeFromHell.EditorExtensions
             gridPath = EditorPrefs.GetString("PathfindingExporter_GridName", gridPath);
             gridRadius = EditorPrefs.GetInt("PathfindingExporter_GridRadius", gridRadius);
 
-            SceneView.onSceneGUIDelegate = Update;
-        }
+            var sceneGUIObservable = Observable.FromEvent<SceneView.OnSceneFunc, SceneView>(
+                h => (view) => h(view),
+                h => SceneView.onSceneGUIDelegate += h,
+                h => SceneView.onSceneGUIDelegate -= h)
+                .Select(_ => Event.current);
 
-        private static Vector3 origin = new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
-
-        bool pressing = false;
-
-        public void Update(SceneView sceneview)
-        {
-            var currentEvent = Event.current;
-            // var position = (new Vector3(currentEvent.mousePosition.x, currentEvent.mousePosition.y) - origin).normalized;
-
-            // planet.transform.rotation = Quaternion.AngleAxis(-position.x, Vector3.up) *
-            //      Quaternion.AngleAxis(position.y, Vector3.right) *
-            //      planet.transform.rotation;
-            if (currentEvent.isMouse && currentEvent.clickCount == 1)
-            {
-                GameObject obj;
-
-                Object prefab = PrefabUtility.GetPrefabParent(Selection.activeObject);
-
-                if (prefab != null)
+            sceneGUIObservable
+                .Where(currentEvent => currentEvent.isMouse && currentEvent.button == 1)
+                .Subscribe(currentEvent =>
                 {
-                    Ray ray = HandleUtility.GUIPointToWorldRay(currentEvent.mousePosition);
+                    var position = (new Vector3(currentEvent.mousePosition.x, currentEvent.mousePosition.y) - origin).normalized;
+
+                    planet.transform.rotation =
+                        Quaternion.AngleAxis(position.x, Camera.current.transform.up) *
+                        Quaternion.AngleAxis(position.y, Camera.current.transform.right) *
+                        planet.transform.rotation;
+                });
+
+            sceneGUIObservable
+                .Where(currentEvent => currentEvent.isMouse && currentEvent.button == 0 && currentEvent.type == EventType.MouseDown)
+                .Select(currentEvent => new
+                {
+                    currentEvent = currentEvent,
+                    prefab = PrefabUtility.GetPrefabParent(Selection.activeObject)
+                }).Where(x => x.prefab != null)
+                .Subscribe(data =>
+                {
                     RaycastHit hit;
+                    Ray ray = HandleUtility.GUIPointToWorldRay(data.currentEvent.mousePosition);
 
                     if (Physics.Raycast(ray, out hit))
                     {
-                        obj = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+                        var obj = (GameObject)PrefabUtility.InstantiatePrefab(data.prefab);
                         obj.transform.position = hit.point;
                         obj.transform.up = hit.normal;
-                        //hit.normal
                     }
-                }
-            }
+                });
         }
 
         public void OnDisable()
