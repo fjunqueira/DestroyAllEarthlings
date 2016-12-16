@@ -4,7 +4,6 @@ using UniRx;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Runtime.Serialization;
-using SpaceCentipedeFromHell;
 using System;
 
 namespace SpaceCentipedeFromHell.EditorExtensions
@@ -20,24 +19,31 @@ namespace SpaceCentipedeFromHell.EditorExtensions
 
         private static Vector3 origin = new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
 
+        private bool IsRightButton(Event currentEvent)
+        {
+            return currentEvent.isMouse && currentEvent.button == 1;
+        }
+
         public void OnEnable()
         {
+            //Debug.Log("OnEnable!");
             this.planet = (PlanetComponent)target;
 
             gridPath = EditorPrefs.GetString("PathfindingExporter_GridName", gridPath);
             gridRadius = EditorPrefs.GetInt("PathfindingExporter_GridRadius", gridRadius);
 
-            var sceneGUIObservable = Observable.FromEvent<SceneView.OnSceneFunc, SceneView>(
-                h => (view) => h(view),
+            var sceneGUIObservable = Observable.FromEvent<SceneView.OnSceneFunc, Event>(
+                h => (view) => h(Event.current),
                 h => SceneView.onSceneGUIDelegate += h,
-                h => SceneView.onSceneGUIDelegate -= h)
-                .Select(_ => Event.current);
+                h => SceneView.onSceneGUIDelegate -= h);
 
             sceneGUIObservable
-                .Where(currentEvent => currentEvent.isMouse && currentEvent.button == 1)
-                .Subscribe(currentEvent =>
+                .Where(x => x.isKey && x.keyCode == KeyCode.Space)
+                .Subscribe(obj =>
                 {
-                    var position = (new Vector3(currentEvent.mousePosition.x, currentEvent.mousePosition.y) - origin).normalized;
+                    var position = (new Vector3(obj.mousePosition.x, obj.mousePosition.y) - origin).normalized;
+
+                    Debug.Log("Position was computed");
 
                     planet.transform.rotation =
                         Quaternion.AngleAxis(position.x, Camera.current.transform.up) *
