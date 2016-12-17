@@ -11,39 +11,28 @@ namespace SpaceCentipedeFromHell.EditorExtensions
     [CustomEditor(typeof(PlanetComponent))]
     public class PlanetEditor : Editor
     {
+        private const int LEFT_MOUSE_BUTTON = 0;
+
+        private static PlanetComponent planet;
+
+        private static Vector3 origin = new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
+
         private int gridRadius;
 
         private string gridPath;
 
-        private PlanetComponent planet;
-
-        private static Vector3 origin = new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
-
-        private bool IsRightButton(Event currentEvent)
+        static PlanetEditor()
         {
-            return currentEvent.isMouse && currentEvent.button == 1;
-        }
-
-        public void OnEnable()
-        {
-            //Debug.Log("OnEnable!");
-            this.planet = (PlanetComponent)target;
-
-            gridPath = EditorPrefs.GetString("PathfindingExporter_GridName", gridPath);
-            gridRadius = EditorPrefs.GetInt("PathfindingExporter_GridRadius", gridRadius);
-
             var sceneGUIObservable = Observable.FromEvent<SceneView.OnSceneFunc, Event>(
-                h => (view) => h(Event.current),
-                h => SceneView.onSceneGUIDelegate += h,
-                h => SceneView.onSceneGUIDelegate -= h);
+                    h => (view) => h(Event.current),
+                    h => SceneView.onSceneGUIDelegate += h,
+                    h => SceneView.onSceneGUIDelegate -= h);
 
             sceneGUIObservable
-                .Where(x => x.isKey && x.keyCode == KeyCode.Space)
+                .Where(currentEvent => currentEvent.isKey && currentEvent.keyCode == KeyCode.Space)
                 .Subscribe(obj =>
                 {
                     var position = (new Vector3(obj.mousePosition.x, obj.mousePosition.y) - origin).normalized;
-
-                    Debug.Log("Position was computed");
 
                     planet.transform.rotation =
                         Quaternion.AngleAxis(position.x, Camera.current.transform.up) *
@@ -52,24 +41,33 @@ namespace SpaceCentipedeFromHell.EditorExtensions
                 });
 
             sceneGUIObservable
-                .Where(currentEvent => currentEvent.isMouse && currentEvent.button == 0 && currentEvent.type == EventType.MouseDown)
-                .Select(currentEvent => new
-                {
-                    currentEvent = currentEvent,
-                    prefab = PrefabUtility.GetPrefabParent(Selection.activeObject)
-                }).Where(x => x.prefab != null)
-                .Subscribe(data =>
-                {
-                    RaycastHit hit;
-                    Ray ray = HandleUtility.GUIPointToWorldRay(data.currentEvent.mousePosition);
+                 .Where(currentEvent => currentEvent.isMouse && currentEvent.button == LEFT_MOUSE_BUTTON && currentEvent.type == EventType.MouseDown)
+                 .Select(currentEvent => new
+                 {
+                     mousePosition = currentEvent.mousePosition,
+                     prefab = PrefabUtility.GetPrefabParent(Selection.activeObject)
+                 })
+                 .Where(x => x.prefab != null)
+                 .Subscribe(data =>
+                 {
+                     RaycastHit hit;
+                     Ray ray = HandleUtility.GUIPointToWorldRay(data.mousePosition);
 
-                    if (Physics.Raycast(ray, out hit))
-                    {
-                        var obj = (GameObject)PrefabUtility.InstantiatePrefab(data.prefab);
-                        obj.transform.position = hit.point;
-                        obj.transform.up = hit.normal;
-                    }
-                });
+                     if (Physics.Raycast(ray, out hit))
+                     {
+                         var obj = (GameObject)PrefabUtility.InstantiatePrefab(data.prefab);
+                         obj.transform.position = hit.point;
+                         obj.transform.up = hit.normal;
+                     }
+                 });
+        }
+
+        public void OnEnable()
+        {
+            planet = (PlanetComponent)target;
+
+            gridPath = EditorPrefs.GetString("PathfindingExporter_GridName", gridPath);
+            gridRadius = EditorPrefs.GetInt("PathfindingExporter_GridRadius", gridRadius);
         }
 
         public void OnDisable()
