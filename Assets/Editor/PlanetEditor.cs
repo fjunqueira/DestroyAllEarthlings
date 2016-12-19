@@ -45,19 +45,25 @@ namespace SpaceCentipedeFromHell.EditorExtensions
                  .Select(currentEvent => new
                  {
                      mousePosition = currentEvent.mousePosition,
-                     prefab = PrefabUtility.GetPrefabParent(Selection.activeObject)
+                     prefab = PrefabUtility.GetPrefabParent(Selection.activeObject) as GameObject
                  })
-                 .Where(x => x.prefab != null)
+                 .Where(x => x.prefab != null && x.prefab.GetComponent<IDestroyable>() != null)
                  .Subscribe(data =>
                  {
                      RaycastHit hit;
                      Ray ray = HandleUtility.GUIPointToWorldRay(data.mousePosition);
 
-                     if (Physics.Raycast(ray, out hit))
+                     if (Physics.Raycast(ray, out hit) && hit.collider.GetComponent<PlanetComponent>() != null)
                      {
                          var obj = (GameObject)PrefabUtility.InstantiatePrefab(data.prefab);
-                         obj.transform.position = hit.point;
+
+                         var colliderHeight = obj.GetComponent<BoxCollider>().size.y;
+
+                         var centerOffset = 1 + ((colliderHeight / 2) / hit.point.magnitude);
+
+                         obj.transform.position = hit.point * centerOffset;
                          obj.transform.up = hit.normal;
+                         obj.transform.parent = planet.transform;
                      }
                  });
         }
