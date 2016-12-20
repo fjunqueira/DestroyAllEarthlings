@@ -3,52 +3,52 @@ using System.Linq;
 
 namespace SpaceCentipedeFromHell.Tests
 {
-    public class NavigationMeshTest
+    public class AdjacencyMapTest
     {
         [Test]
-        public void GeodesicSphereNavMeshTest1()
+        public void GeodesicSphereAdjacencyMapTest1()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var adjacencyMap = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
-            Assert.AreEqual(320, navMesh.AdjacencyMap.Count, "There must be one entry for each of the 320 vertices of the Geodesic Sphere");
+            Assert.AreEqual(320, adjacencyMap.Map.Count, "There must be one entry for each of the 320 vertices of the Geodesic Sphere");
         }
 
         [Test]
-        public void GeodesicSphereNavMeshTest2()
+        public void GeodesicSphereAdjacencyMapTest2()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var adjacencyMap = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
-            var sizes = TestNavMeshBuilder.GetSizes(navMesh);
+            var sizes = TestAdjacencyMapBuilder.GetSizes(adjacencyMap);
 
             Assert.AreEqual(260, sizes.First().Count(), "260 vertices out of the 320 in the mesh should have 12 neighbouring triangles");
         }
 
         [Test]
-        public void GeodesicSphereNavMeshTest3()
+        public void GeodesicSphereAdjacencyMapTest3()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var adjacencyMap = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
-            var sizes = TestNavMeshBuilder.GetSizes(navMesh);
+            var sizes = TestAdjacencyMapBuilder.GetSizes(adjacencyMap);
 
             Assert.AreEqual(12, sizes.First().Key, "260 vertices out of the 320 in the mesh should have 12 neighbouring triangles");
         }
 
         [Test]
-        public void GeodesicSphereNavMeshTest4()
+        public void GeodesicSphereAdjacencyMapTest4()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var adjacencyMap = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
-            var sizes = TestNavMeshBuilder.GetSizes(navMesh);
+            var sizes = TestAdjacencyMapBuilder.GetSizes(adjacencyMap);
 
             Assert.AreEqual(60, sizes.Last().Count(), "60 vertices out of the 320 in the mesh should have 11 neighbouring triangles");
         }
 
         [Test]
-        public void GeodesicSphereNavMeshTest5()
+        public void GeodesicSphereAdjacencyMapTest5()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var adjacencyMap = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
-            var sizes = TestNavMeshBuilder.GetSizes(navMesh);
+            var sizes = TestAdjacencyMapBuilder.GetSizes(adjacencyMap);
 
             Assert.AreEqual(11, sizes.Last().Key, "60 vertices out of the 320 in the mesh should have 11 neighbouring triangles");
         }

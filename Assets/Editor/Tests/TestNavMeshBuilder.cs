@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace SpaceCentipedeFromHell.Tests
 {
-    public static class TestNavMeshBuilder
+    public static class TestAdjacencyMapBuilder
     {
-        public static NavigationMesh BuildNavMesh()
+        public static MeshAdjacencyMap BuildAdjacencyMap()
         {
             var sphere = GeodesicSphere.InitializeSphere(2);
 
@@ -20,12 +20,12 @@ namespace SpaceCentipedeFromHell.Tests
             var meshFilter = gameObject.AddComponent<MeshFilter>();
             meshFilter.sharedMesh = mesh;
 
-            return new NavigationMesh(meshFilter, new MeshNormalizer());
+            return new MeshAdjacencyMap(new MeshNormalizer().Normalize(meshFilter.sharedMesh));
         }
 
-		public static IOrderedEnumerable<IGrouping<int, KeyValuePair<Triangle, Triangle[]>>> GetSizes(NavigationMesh navMesh)
+		public static IOrderedEnumerable<IGrouping<int, KeyValuePair<Triangle, Triangle[]>>> GetSizes(MeshAdjacencyMap adjacencyMap)
         {
-            return navMesh.AdjacencyMap.GroupBy(x => x.Value.Count()).OrderByDescending(x => x.Key);
+            return adjacencyMap.Map.GroupBy(x => x.Value.Count()).OrderByDescending(x => x.Key);
 		}
     }
 }

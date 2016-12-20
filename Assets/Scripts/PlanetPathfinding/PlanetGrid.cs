@@ -14,14 +14,14 @@ namespace SpaceCentipedeFromHell
 
         private Dictionary<Vector3, PlanetNode> positionIndexing = new Dictionary<Vector3, PlanetNode>();
 
-        public PlanetGrid(NavigationMesh navMesh, float planetRadius)
+        public PlanetGrid(MeshAdjacencyMap adjacencyMap, float planetRadius)
         {
             this.planetRadius = planetRadius;
 
-            var keys = navMesh.AdjacencyMap.Keys.Select(key => new PlanetNode(this, key)).ToArray();
+            var keys = adjacencyMap.Map.Keys.Select(key => new PlanetNode(this, key)).ToArray();
 
             // This is needed because each node reference must be unique for the pathfinder
-            var values = navMesh.AdjacencyMap.Values.Select(adjacentTriangles =>
+            var values = adjacencyMap.Map.Values.Select(adjacentTriangles =>
                 keys.Where(planetNode => adjacentTriangles.Contains(planetNode.Triangle)).ToArray()).ToArray();
 
             for (int i = 0; i < keys.Count(); i++) this.adjacencyIndexing.Add(keys[i], values[i]);

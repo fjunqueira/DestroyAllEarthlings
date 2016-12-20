@@ -17,7 +17,7 @@ namespace SpaceCentipedeFromHell.Tests
         [Test]
         public void GeodesicPlanetGrid1()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var navMesh = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
             var grid = new PlanetGrid(navMesh, 1);
 
@@ -27,7 +27,7 @@ namespace SpaceCentipedeFromHell.Tests
         [Test]
         public void GeodesicPlanetGrid2()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var navMesh = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
             var grid = new PlanetGrid(navMesh, 1);
 
@@ -39,7 +39,7 @@ namespace SpaceCentipedeFromHell.Tests
         [Test]
         public void GeodesicPlanetGrid3()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var navMesh = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
             var grid = new PlanetGrid(navMesh, 1);
 
@@ -51,7 +51,7 @@ namespace SpaceCentipedeFromHell.Tests
         [Test]
         public void GeodesicPlanetGrid4()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var navMesh = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
             var grid = new PlanetGrid(navMesh, 1);
 
@@ -63,7 +63,7 @@ namespace SpaceCentipedeFromHell.Tests
         [Test]
         public void GeodesicPlanetGrid5()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var navMesh = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
             var grid = new PlanetGrid(navMesh, 1);
 
@@ -75,7 +75,7 @@ namespace SpaceCentipedeFromHell.Tests
         [Test]
         public void FindPathOnGeodesicSphereSurface1()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var navMesh = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
             var grid = new PlanetGrid(navMesh, 1);
 
@@ -92,7 +92,7 @@ namespace SpaceCentipedeFromHell.Tests
         [Test]
         public void FindPathOnGeodesicSphereSurface2()
         {
-            var navMesh = TestNavMeshBuilder.BuildNavMesh();
+            var navMesh = TestAdjacencyMapBuilder.BuildAdjacencyMap();
 
             var grid = new PlanetGrid(navMesh, 1);
 

@@ -5,18 +5,14 @@ using System.Collections.Generic;
 namespace SpaceCentipedeFromHell
 {
     /// <summary>
-    /// Extracts a navigation mesh given a mesh, only works triangle meshes
+    /// Extracts a navigation mesh given a mesh, only works on triangle meshes
     /// </summary>
-    public class NavigationMesh
+    public class MeshAdjacencyMap
     {
         private Dictionary<Triangle, Triangle[]> adjacencyMap;
 
-        public NavigationMesh(MeshFilter filter, MeshNormalizer normalizer)
+        public MeshAdjacencyMap(NormalizedMesh normalizedMesh)
         {
-            var mesh = filter.sharedMesh;
-
-            var normalizedMesh = normalizer.Normalize(mesh);
-
             var triangles = normalizedMesh.Triangles.ChunksOf(3).ToList();
 
             this.adjacencyMap = triangles.Select(triangle => new KeyValuePair<Triangle, Triangle[]>(
@@ -39,7 +35,7 @@ namespace SpaceCentipedeFromHell
             return indexes.Select(verticeIndex => mesh.Vertices.ElementAt(verticeIndex));
         }
 
-        public Dictionary<Triangle, Triangle[]> AdjacencyMap
+        public Dictionary<Triangle, Triangle[]> Map
         {
             get { return this.adjacencyMap; }
         }

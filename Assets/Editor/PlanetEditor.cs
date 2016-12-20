@@ -4,7 +4,6 @@ using UniRx;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Runtime.Serialization;
-using System;
 
 namespace SpaceCentipedeFromHell.EditorExtensions
 {
@@ -24,7 +23,7 @@ namespace SpaceCentipedeFromHell.EditorExtensions
         static PlanetEditor()
         {
             var sceneGUIObservable = Observable.FromEvent<SceneView.OnSceneFunc, Event>(
-                    h => (view) => h(Event.current),
+                    h => (view) => h(Event.current), 
                     h => SceneView.onSceneGUIDelegate += h,
                     h => SceneView.onSceneGUIDelegate -= h);
 
@@ -57,7 +56,9 @@ namespace SpaceCentipedeFromHell.EditorExtensions
                      {
                          var obj = (GameObject)PrefabUtility.InstantiatePrefab(data.prefab);
 
-                         var colliderHeight = obj.GetComponent<BoxCollider>().size.y;
+                         var boxCollider = obj.GetComponent<BoxCollider>();
+
+                         var colliderHeight = boxCollider == null ? 0 : boxCollider.size.y;
 
                          var centerOffset = 1 + ((colliderHeight / 2) / hit.point.magnitude);
 
@@ -114,11 +115,12 @@ namespace SpaceCentipedeFromHell.EditorExtensions
         {
             Debug.Log("Exporting, this may take a while...");
 
-            var navigationMesh = new NavigationMesh(
-                planet.GetComponent<MeshFilter>(), new MeshNormalizer());
+            var normalizedMesh =
+                new MeshNormalizer().Normalize(planet.GetComponent<MeshFilter>().sharedMesh);
 
-            var planetGrid = new PlanetGrid(
-                navigationMesh, gridRadius);
+            var adjacencyMap = new MeshAdjacencyMap(normalizedMesh);
+
+            var planetGrid = new PlanetGrid(adjacencyMap, gridRadius);
 
             using (var stream = new FileStream(gridPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
