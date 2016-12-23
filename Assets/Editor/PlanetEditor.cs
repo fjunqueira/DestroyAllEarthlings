@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UniRx;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using System.Runtime.Serialization;
+using System.Linq;
+using System.Reflection;
 
 namespace SpaceCentipedeFromHell.EditorExtensions
 {
@@ -58,9 +57,17 @@ namespace SpaceCentipedeFromHell.EditorExtensions
 
                          var centerOffset = 1 + ((colliderHeight / 2) / hit.point.magnitude);
 
-                         obj.transform.position = hit.point * centerOffset;
+                         obj.transform.position = FacePicker.ToTriangle(hit).Centroid * centerOffset;
                          obj.transform.up = hit.normal;
                          obj.transform.parent = planet.transform;
+
+                         foreach (var gravityBody in obj.GetComponentsInChildren<GravityBody>(true))
+                         {
+                             gravityBody
+                                .GetType()
+                                .GetField("attractor", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .SetValue(gravityBody, hit.collider.GetComponent<GravityAttractor>());
+                         }
                      }
                  });
         }

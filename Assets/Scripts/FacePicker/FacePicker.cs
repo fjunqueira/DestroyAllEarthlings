@@ -5,7 +5,7 @@ namespace SpaceCentipedeFromHell
     public class FacePicker
     {
         private Camera camera;
-        
+
         public FacePicker(Camera camera)
         {
             this.camera = camera;
@@ -21,6 +21,11 @@ namespace SpaceCentipedeFromHell
             if (!Physics.Raycast(camera.ScreenPointToRay(mousePosition), out hit))
                 return null;
 
+            return ToTriangle(hit);
+        }
+
+        public static Triangle ToTriangle(RaycastHit hit)
+        {
             var meshCollider = hit.collider as MeshCollider;
             if (meshCollider == null || meshCollider.sharedMesh == null)
                 return null;
@@ -29,8 +34,8 @@ namespace SpaceCentipedeFromHell
             var vertices = mesh.vertices;
             var triangles = mesh.triangles;
 
-			// If the mesh for the renderer is normalized the same way it's done for the navmesh
-			// Instead of this we could simply navmesh.AdjacencyMap.ElementAt(hit.triangleIndex * 3), i think
+            // If the mesh for the renderer is normalized the same way it's done for the navmesh
+            // Instead of this we could simply navmesh.AdjacencyMap.ElementAt(hit.triangleIndex * 3), i think
             var p0 = vertices[triangles[hit.triangleIndex * 3 + 0]];
             var p1 = vertices[triangles[hit.triangleIndex * 3 + 1]];
             var p2 = vertices[triangles[hit.triangleIndex * 3 + 2]];
