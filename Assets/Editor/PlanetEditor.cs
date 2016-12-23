@@ -7,23 +7,19 @@ using System.Runtime.Serialization;
 
 namespace SpaceCentipedeFromHell.EditorExtensions
 {
-    [CustomEditor(typeof(PlanetComponent))]
+    [CustomEditor(typeof(Planet))]
     public class PlanetEditor : Editor
     {
         private const int LEFT_MOUSE_BUTTON = 0;
 
-        private static PlanetComponent planet;
+        private static Planet planet;
 
         private static Vector3 origin = new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
-
-        private int gridRadius;
-
-        private string gridPath;
 
         static PlanetEditor()
         {
             var sceneGUIObservable = Observable.FromEvent<SceneView.OnSceneFunc, Event>(
-                    h => (view) => h(Event.current), 
+                    h => (view) => h(Event.current),
                     h => SceneView.onSceneGUIDelegate += h,
                     h => SceneView.onSceneGUIDelegate -= h);
 
@@ -46,17 +42,17 @@ namespace SpaceCentipedeFromHell.EditorExtensions
                      mousePosition = currentEvent.mousePosition,
                      prefab = PrefabUtility.GetPrefabParent(Selection.activeObject) as GameObject
                  })
-                 .Where(x => x.prefab != null && x.prefab.GetComponent<IDestroyable>() != null)
+                 .Where(x => x.prefab != null && x.prefab.GetComponent<Destroyable>() != null)
                  .Subscribe(data =>
                  {
                      RaycastHit hit;
                      Ray ray = HandleUtility.GUIPointToWorldRay(data.mousePosition);
 
-                     if (Physics.Raycast(ray, out hit) && hit.collider.GetComponent<PlanetComponent>() != null)
+                     if (Physics.Raycast(ray, out hit) && hit.collider.GetComponent<Planet>() != null)
                      {
                          var obj = (GameObject)PrefabUtility.InstantiatePrefab(data.prefab);
 
-                         var boxCollider = obj.GetComponent<BoxCollider>();
+                         var boxCollider = obj.GetComponentInChildren<BoxCollider>();
 
                          var colliderHeight = boxCollider == null ? 0 : boxCollider.size.y;
 
@@ -71,74 +67,7 @@ namespace SpaceCentipedeFromHell.EditorExtensions
 
         public void OnEnable()
         {
-            planet = (PlanetComponent)target;
-
-            gridPath = EditorPrefs.GetString("PathfindingExporter_GridName", gridPath);
-            gridRadius = EditorPrefs.GetInt("PathfindingExporter_GridRadius", gridRadius);
-        }
-
-        public void OnDisable()
-        {
-            EditorPrefs.SetString("PathfindingExporter_GridName", gridPath);
-            EditorPrefs.SetInt("PathfindingExporter_GridRadius", gridRadius);
-        }
-
-        private void GridName()
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(" Grid Name   ");
-            gridPath = EditorGUILayout.TextField(gridPath);
-            GUILayout.EndHorizontal();
-        }
-
-        private void GridRadius()
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(" Grid Radius ");
-            gridRadius = EditorGUILayout.IntField(gridRadius);
-            GUILayout.EndHorizontal();
-        }
-
-        public override void OnInspectorGUI()
-        {
-            GridName();
-            GridRadius();
-
-            GUILayout.BeginHorizontal();
-
-            if (GUILayout.Button("Export Grid")) ExportGrid();
-
-            GUILayout.EndHorizontal();
-        }
-
-        public void ExportGrid()
-        {
-            Debug.Log("Exporting, this may take a while...");
-
-            var normalizedMesh =
-                new MeshNormalizer().Normalize(planet.GetComponent<MeshFilter>().sharedMesh);
-
-            var adjacencyMap = new MeshAdjacencyMap(normalizedMesh);
-
-            var planetGrid = new PlanetGrid(adjacencyMap, gridRadius);
-
-            using (var stream = new FileStream(gridPath, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                var surrogateSelector = new SurrogateSelector();
-
-                surrogateSelector.AddSurrogate(typeof(Vector3),
-                                new StreamingContext(StreamingContextStates.All),
-                                new Vector3SerializationSurrogate());
-
-                var formatter = new BinaryFormatter()
-                {
-                    SurrogateSelector = surrogateSelector
-                };
-
-                formatter.Serialize(stream, planetGrid);
-
-                Debug.Log("Exported successfully!");
-            }
+            planet = (Planet)target;
         }
     }
 }

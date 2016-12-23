@@ -5,12 +5,10 @@ namespace SpaceCentipedeFromHell
     public class FacePicker
     {
         private Camera camera;
-        private MeshCollider collider;
-
-        public FacePicker(Camera camera, MeshCollider collider)
+        
+        public FacePicker(Camera camera)
         {
             this.camera = camera;
-            this.collider = collider;
         }
 
         ///<summary>
