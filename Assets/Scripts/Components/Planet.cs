@@ -7,9 +7,12 @@ namespace SpaceCentipedeFromHell
 {
     public class Planet : MonoBehaviour
     {
+        [SerializeField]
+        private float radius;
+
         private static Vector3 origin = new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
 
-        public float Radius { get; set; }
+        public float Radius { get { return this.radius; } }
 
         public void Start()
         {
