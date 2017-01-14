@@ -6,9 +6,48 @@ namespace SpaceCentipedeFromHell
 {
     public class UFOHull : MonoBehaviour
     {
+        [SerializeField]
+        private Transform laser;
+
+        [SerializeField]
+        private UFO ufo;
+
+        [SerializeField]
+        private Transform beam;
+
+        [SerializeField]
+        private Light hullLight;
+
         public void RotateAround(Vector3 position, Vector3 up, float angle)
         {
             this.transform.RotateAround(position, up, angle);
+        }
+
+        private void Update()
+        {
+            hullLight.spotAngle += (Input.GetButton("Fire1") ? -Time.deltaTime : Time.deltaTime) * 100;
+
+            hullLight.spotAngle = Mathf.Clamp(hullLight.spotAngle, 5, 70);
+
+            hullLight.color = Input.GetButton("Fire1") ?
+                new Color((float)129 / 255, (float)177 / 255, (float)255 / 255, (float)255 / 255) :
+                new Color((float)75 / 255, (float)255 / 255, (float)51 / 255, (float)255 / 255);
+        }
+
+        private void LateUpdate()
+        {
+            if (Input.GetButton("Fire1"))
+            {
+                RaycastHit hit;
+
+                if (Physics.Raycast(transform.position, -ufo.transform.up, out hit))
+                {
+                    laser.transform.position = hit.point + (hit.point.normalized * 4);
+                    laser.transform.rotation = ufo.transform.rotation;
+
+                    beam.transform.position = transform.position;
+                }
+            }
         }
     }
 }

@@ -40,7 +40,7 @@ function Start() {
 function Update() {
   // Fire laser when left mouse button is pressed
 
-  if (Input.GetButtonDown("Fire1")&& Charging == null) {
+  if (Input.GetButtonDown("Fire1") && Charging == null) {
     LaserChargeFlag = 0;
     LaserChargeAudio.Play();
     LaserChargeBeam.SetActive(true);
@@ -50,7 +50,7 @@ function Update() {
   // Stop laser if left mouse button is released
 
   if (Input.GetButtonUp("Fire1")) {
-    if(Charging!= null) StopCoroutine(Charging);
+    if (Charging != null) StopCoroutine(Charging);
     Charging = null;
     LaserChargeFlag = 1;
     LaserEffects.SetActive(false);
@@ -72,7 +72,7 @@ function LaserChargeWait() {
     LaserSmokeEmitter.enabled = true;
     LaserAudio.Play();
     // yield WaitForSeconds (0.2);
-    ScorchMark.SetActive(true);
+ //   ScorchMark.SetActive(true);
     LaserChargeFlag = 0;
   }
 
