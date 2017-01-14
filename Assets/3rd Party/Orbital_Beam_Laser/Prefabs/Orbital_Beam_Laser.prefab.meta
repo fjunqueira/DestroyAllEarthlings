@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e05c716fb25e1d044bf09cab1d86a74e
+labels:
+- Marsh
+- Bombardment
+- Laser
+- Beam
+- Orbital
+- ParticleEffect
+- Fire
+- Sparks
+- Smoke
+timeCreated: 1480078862
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

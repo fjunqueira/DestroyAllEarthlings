@@ -1,0 +1,12 @@
+A dramatic aerial bombardment Orbital Beam Laser. Hold the left mouse button to fire the laser.
+
+The effect comes complete with texture animation, sparks, smoke, flickering light, scorch mark and sound effects, with a custom script to provide complete control.
+
+Load the "Orbital_Laser_Beam.unity" for an example scene, or drag the Orbital_Beam_Laser.prefab asset from the Prefabs folder from the Project window into the Hierarchy window (make sure the asset it raised up slightly on the Y axis so the scorch mark isn't beneath the ground).
+
+Have fun!
+
+Thanks for purchasing this asset, please consider rating or writing a review about it. If you have any questions then please get in touch at bendurrant@rivermillstudios.com
+
+
+
