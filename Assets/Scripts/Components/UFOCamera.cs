@@ -9,40 +9,40 @@ namespace SpaceCentipedeFromHell
         [SerializeField]
         private UFO ufo;
 
+        [SerializeField]
+        private UFOHull hull;
+
+        [SerializeField]
+        private float turningSpeed = 200;
+
         private float angle = 180;
 
-		private bool startRotatingS = false;
-		
-		private bool startRotatingW = false;
+        private bool startRotatingS = true;
 
-        private void Start()
-        {
-            //neededRotation = Quaternion.AngleAxis(180, ufo.transform.up);
-            //transform.RotateAround(ufo.transform.position, ufo.transform.up, 180);
-        }
+        private bool startRotatingW = false;
 
         private void Update()
         {
-            //transform.rotation = Quaternion.RotateTowards(transform.rotation, neededRotation, Time.deltaTime * 100f);
-
-			if (Input.GetKey(KeyCode.S)) startRotatingS = true;
-			if (Input.GetKey(KeyCode.W)) startRotatingW = true;
-
-            if (!startRotatingW && startRotatingS && angle < 180)
+            if (Input.GetKeyUp(KeyCode.UpArrow))
             {
-                transform.RotateAround(ufo.transform.position, ufo.transform.up, 10);
-                angle += 10;
+                startRotatingS = startRotatingW;
+                startRotatingW = !startRotatingW;
             }
-			else startRotatingS = false;
 
-			if (!startRotatingS && startRotatingW && angle > 0)
+            var rotatingToFront = !startRotatingW && startRotatingS && angle < 180;
+            var rotatingToBack = !startRotatingS && startRotatingW && angle > 0;
+
+            var nextAngle = Time.deltaTime * turningSpeed * (rotatingToFront ? 1 : -1);
+
+            if (rotatingToFront && angle + nextAngle > 180) nextAngle = 180 - angle;
+            if (rotatingToBack && angle + nextAngle < 0) nextAngle = -angle;
+
+            if (rotatingToBack || rotatingToFront)
             {
-                transform.RotateAround(ufo.transform.position, ufo.transform.up, -10);
-                angle -= 10;
+                transform.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
+                hull.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
+                angle += nextAngle;
             }
-			else startRotatingW = false;
-
-			Debug.Log(angle);
         }
     }
 }
