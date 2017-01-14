@@ -72,7 +72,7 @@ function LaserChargeWait() {
     LaserSmokeEmitter.enabled = true;
     LaserAudio.Play();
     // yield WaitForSeconds (0.2);
- //   ScorchMark.SetActive(true);
+    //   ScorchMark.SetActive(true);
     LaserChargeFlag = 0;
   }
 
