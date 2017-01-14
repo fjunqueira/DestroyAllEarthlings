@@ -13,13 +13,15 @@ namespace SpaceCentipedeFromHell
         private UFOHull hull;
 
         [SerializeField]
-        private float turningSpeed = 200;
+        private float turningSpeed = 2f;
 
         private float angle = 180;
 
         private bool startRotatingS = true;
 
         private bool startRotatingW = false;
+
+        private float interpolation = 1;
 
         private void Update()
         {
@@ -29,16 +31,17 @@ namespace SpaceCentipedeFromHell
                 startRotatingW = !startRotatingW;
             }
 
-            var rotatingToFront = !startRotatingW && startRotatingS && angle < 180;
-            var rotatingToBack = !startRotatingS && startRotatingW && angle > 0;
-
-            var nextAngle = Time.deltaTime * turningSpeed * (rotatingToFront ? 1 : -1);
-
-            if (rotatingToFront && angle + nextAngle > 180) nextAngle = 180 - angle;
-            if (rotatingToBack && angle + nextAngle < 0) nextAngle = -angle;
+            var rotatingToFront = !startRotatingW && startRotatingS && interpolation < 1;
+            var rotatingToBack = !startRotatingS && startRotatingW && interpolation > 0;
 
             if (rotatingToBack || rotatingToFront)
             {
+                var delta = turningSpeed * (rotatingToFront ? Time.deltaTime : -Time.deltaTime);
+
+                interpolation = Mathf.Clamp(interpolation += delta, 0, 1);
+
+                var nextAngle = Mathf.LerpAngle(0, 180, interpolation) - angle;
+
                 transform.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
                 hull.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
                 angle += nextAngle;

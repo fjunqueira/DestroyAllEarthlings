@@ -24,6 +24,8 @@ namespace SpaceCentipedeFromHell
 
         private Color green = new Color((float)75 / 255, (float)255 / 255, (float)51 / 255, (float)255 / 255);
 
+        private float interpolation = 1;
+
         private void Start()
         {
             material = transform.GetComponent<Renderer>().material;
@@ -36,11 +38,13 @@ namespace SpaceCentipedeFromHell
 
         private void Update()
         {
-            hullLight.spotAngle += (Input.GetButton("Fire1") ? -Time.deltaTime : Time.deltaTime) * 100;
+            var delta = Input.GetButton("Fire1") ? -Time.deltaTime : Time.deltaTime;
 
-            hullLight.spotAngle = Mathf.Clamp(hullLight.spotAngle, 5, 70);
+            interpolation = Mathf.Clamp(interpolation += delta, 0, 1);
 
-            var color = Color.Lerp(blue, green, hullLight.spotAngle / 70);
+            hullLight.spotAngle = Mathf.LerpAngle(5, 70, interpolation);
+
+            var color = Color.Lerp(blue, green, interpolation);
 
             material.SetColor("_EmissionColor", color);
             hullLight.color = color;
