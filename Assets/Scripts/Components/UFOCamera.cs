@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 namespace SpaceCentipedeFromHell
@@ -16,10 +18,6 @@ namespace SpaceCentipedeFromHell
         private float turningSpeed = 2f;
 
         private float angle = 180;
-
-        private bool startRotatingS = true;
-
-        private bool startRotatingW = false;
 
         private float interpolation = 1;
 

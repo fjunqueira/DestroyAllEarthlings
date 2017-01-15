@@ -6,18 +6,10 @@ namespace SpaceCentipedeFromHell
 {
     public class UFO : MonoBehaviour
     {
-        [SerializeField]
-        private Animator idleAnimation;
-
         private bool reverseInput = false;
 
         [SerializeField]
         private float speed = 50;
-
-        private void Start()
-        {
-            this.idleAnimation.Play("UFOHullIdle");
-        }
 
         private void Update()
         {

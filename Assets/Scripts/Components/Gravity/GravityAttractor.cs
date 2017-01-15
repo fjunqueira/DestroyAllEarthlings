@@ -8,6 +8,9 @@ namespace SpaceCentipedeFromHell
     [RequireComponent(typeof(Planet))]
     public class GravityAttractor : MonoBehaviour
     {
+        [SerializeField]
+        private float gravity = 40.0f;
+
         private Planet planet;
 
         private void Start()
@@ -17,7 +20,7 @@ namespace SpaceCentipedeFromHell
 
         public void Attract(Rigidbody body)
         {
-            var force = (body.position - this.transform.position).normalized * -10;
+            var force = (body.position - this.transform.position).normalized * -gravity;
 
             body.drag = body.position.magnitude <= this.planet.Radius + 1 ? 0.1f : 1.0f;
 
