@@ -41,7 +41,7 @@ namespace SpaceCentipedeFromHell.EditorExtensions
                      mousePosition = currentEvent.mousePosition,
                      prefab = PrefabUtility.GetPrefabParent(Selection.activeObject) as GameObject
                  })
-                 .Where(x => x.prefab != null && x.prefab.GetComponent<Destroyable>() != null)
+                 .Where(x => x.prefab != null && x.prefab.GetComponentInChildren<Destroyable>() != null)
                  .Subscribe(data =>
                  {
                      RaycastHit hit;
