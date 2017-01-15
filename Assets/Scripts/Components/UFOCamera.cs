@@ -23,29 +23,21 @@ namespace SpaceCentipedeFromHell
 
         private float interpolation = 1;
 
+        private float direction = 1;
+
         private void Update()
         {
-            if (Input.GetKeyUp(KeyCode.UpArrow))
-            {
-                startRotatingS = startRotatingW;
-                startRotatingW = !startRotatingW;
-            }
+            if (Input.GetKeyUp(KeyCode.UpArrow)) direction = -direction;
 
-            var rotatingToFront = !startRotatingW && startRotatingS && interpolation < 1;
-            var rotatingToBack = !startRotatingS && startRotatingW && interpolation > 0;
+            var delta = direction * turningSpeed * Time.deltaTime;
 
-            if (rotatingToBack || rotatingToFront)
-            {
-                var delta = turningSpeed * (rotatingToFront ? Time.deltaTime : -Time.deltaTime);
+            interpolation = Mathf.Clamp(interpolation += delta, 0, 1);
 
-                interpolation = Mathf.Clamp(interpolation += delta, 0, 1);
+            var nextAngle = Mathf.LerpAngle(0, 180, interpolation) - angle;
 
-                var nextAngle = Mathf.LerpAngle(0, 180, interpolation) - angle;
-
-                transform.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
-                hull.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
-                angle += nextAngle;
-            }
+            transform.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
+            hull.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
+            angle += nextAngle;
         }
     }
 }
