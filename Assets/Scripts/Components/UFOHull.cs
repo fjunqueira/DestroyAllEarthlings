@@ -16,6 +16,9 @@ namespace SpaceCentipedeFromHell
         private Transform beam;
 
         [SerializeField]
+        private Transform charger;
+
+        [SerializeField]
         private Light hullLight;
 
         private Material material;
@@ -62,6 +65,7 @@ namespace SpaceCentipedeFromHell
                     laser.transform.rotation = ufo.transform.rotation;
 
                     beam.transform.position = transform.position;
+                    charger.transform.position = transform.position;
                 }
             }
         }
