@@ -4,7 +4,7 @@ using UniRx;
 using System.Linq;
 using System.Reflection;
 
-namespace SpaceCentipedeFromHell.EditorExtensions
+namespace DestroyAllEarthlings.EditorExtensions
 {
     [CustomEditor(typeof(Planet))]
     public class PlanetEditor : Editor

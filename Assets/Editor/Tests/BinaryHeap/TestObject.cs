@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpaceCentipedeFromHell.Tests
+namespace DestroyAllEarthlings.Tests
 {
     public class TestObject : IHeapItem
     {

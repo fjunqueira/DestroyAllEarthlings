@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor;
 using UnityEngine;
 
-namespace SpaceCentipedeFromHell.EditorExtensions
+namespace DestroyAllEarthlings.EditorExtensions
 {
     [CustomEditor(typeof(PlanetNavMesh))]
     public class PlanetNavigationMeshEditor : Editor

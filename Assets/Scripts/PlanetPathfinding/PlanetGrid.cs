@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     [Serializable]
     public class PlanetGrid : IPathfindingGrid<PlanetNode>

@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     /// <summary>
     /// Extracts a navigation mesh given a mesh, only works on triangle meshes

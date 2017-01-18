@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 
-namespace SpaceCentipedeFromHell.Tests
+namespace DestroyAllEarthlings.Tests
 {
 public class BinaryHeapTests
     {

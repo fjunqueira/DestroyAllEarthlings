@@ -1,6 +1,4 @@
-using SpaceCentipedeFromHell;
-
-namespace SpaceCentipedeFromHell.Tests
+namespace DestroyAllEarthlings.Tests
 {
     public class HeapInt : IHeapItem
     {

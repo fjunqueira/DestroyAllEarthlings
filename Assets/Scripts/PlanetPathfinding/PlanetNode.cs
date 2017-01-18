@@ -2,7 +2,7 @@
 using UnityEngine;
 using System;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     [Serializable]
     public class PlanetNode : PathfindingNode

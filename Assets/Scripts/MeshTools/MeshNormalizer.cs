@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public class MeshNormalizer
     {

@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace SpaceCentipedeFromHell.Tests
+namespace DestroyAllEarthlings.Tests
 {
     public class PathfinderTest
     {

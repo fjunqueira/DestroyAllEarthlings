@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace SpaceCentipedeFromHell.Tests
+namespace DestroyAllEarthlings.Tests
 {
     public class PlaneGrid : IPathfindingGrid<SquareNode>
     {

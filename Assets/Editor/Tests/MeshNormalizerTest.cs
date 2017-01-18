@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Linq;
 
-namespace SpaceCentipedeFromHell.Tests
+namespace DestroyAllEarthlings.Tests
 {
     public class MeshNormalizerTest
     {

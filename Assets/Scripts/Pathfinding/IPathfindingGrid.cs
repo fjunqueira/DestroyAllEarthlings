@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public interface IPathfindingGrid<TNode> where TNode : PathfindingNode
     {

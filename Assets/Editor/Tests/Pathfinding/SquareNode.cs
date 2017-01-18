@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SpaceCentipedeFromHell.Tests
+namespace DestroyAllEarthlings.Tests
 {
     public class SquareNode : PathfindingNode
     {

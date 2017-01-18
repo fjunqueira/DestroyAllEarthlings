@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using UnityEngine;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public class Vector3SerializationSurrogate : ISerializationSurrogate
     {

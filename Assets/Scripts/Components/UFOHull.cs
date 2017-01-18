@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public class UFOHull : MonoBehaviour
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public static class ChunksOfExtension
     {

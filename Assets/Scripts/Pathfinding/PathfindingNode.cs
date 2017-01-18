@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     [Serializable]
     public abstract class PathfindingNode : IHeapItem

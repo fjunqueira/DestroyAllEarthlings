@@ -4,7 +4,7 @@ using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public class UFOCamera : MonoBehaviour
     {

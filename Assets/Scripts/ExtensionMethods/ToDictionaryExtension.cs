@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public static class ToDictionaryExtension
     {

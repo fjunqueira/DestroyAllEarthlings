@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public class BinaryHeap<T> where T : IHeapItem
     {

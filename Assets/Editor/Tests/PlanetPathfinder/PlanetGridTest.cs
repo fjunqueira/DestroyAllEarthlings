@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace SpaceCentipedeFromHell.Tests
+namespace DestroyAllEarthlings.Tests
 {
     ///<summary>
     /// This class has the same tests as the NavigationMeshTest, but here we are testing the indexed data

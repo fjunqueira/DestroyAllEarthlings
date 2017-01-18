@@ -3,7 +3,7 @@ using UnityEngine;
 using UniRx;
 using System;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public class Planet : MonoBehaviour
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SpaceCentipedeFromHell.Tests
+namespace DestroyAllEarthlings.Tests
 {
     public class HeapIntComparer : IComparer<HeapInt>
     {

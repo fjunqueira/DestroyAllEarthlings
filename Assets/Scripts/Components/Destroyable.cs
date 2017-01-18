@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using System.Collections;
 using UniRx;
 using UniRx.Triggers;
 using System;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public class Destroyable : MonoBehaviour
     {
@@ -16,7 +17,7 @@ namespace SpaceCentipedeFromHell
 
         private void Start()
         {
-            this.OnTriggerEnterAsObservable()
+            building.OnTriggerEnterAsObservable()
                 .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
                 .Subscribe(collision =>
                 {
@@ -28,7 +29,7 @@ namespace SpaceCentipedeFromHell
                     foreach (var child in children)
                         child.AddForceAtPosition((this.transform.up - collision.transform.position).normalized * 10.0f, collision.transform.position, ForceMode.Impulse);
 
-                    //destructionFx.OnDestroyAsObservable().Subscribe(__ => Destroy(this.gameObject));
+                    children.First().OnDestroyAsObservable().Subscribe(_ => Destroy(this.gameObject)).AddTo(this);
                 });
         }
     }

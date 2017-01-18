@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public class FacePicker
     {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public interface IHeapItem
     {

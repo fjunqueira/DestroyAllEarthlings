@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public static class ZipExtension
     {

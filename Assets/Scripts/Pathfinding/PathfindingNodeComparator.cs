@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SpaceCentipedeFromHell
+namespace DestroyAllEarthlings
 {
     public sealed class PathfindingNodeComparator : IComparer<PathfindingNode>
     {
