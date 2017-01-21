@@ -43,15 +43,12 @@ namespace DestroyAllEarthlings
             this.transform.RotateAround(position, up, angle);
         }
 
-        // move to laser script
         private void Update()
         {
-            float delta = 0;//Input.GetButton("Fire1") ? -Time.deltaTime : Time.deltaTime;
+            float delta = 0;
 
-            if (this.laser.laserChargeBeam.activeSelf)
-                delta = -Time.deltaTime;
-            else if (!this.laser.laserEffects.activeSelf)
-                delta = Time.deltaTime;
+            if (laser.IsCharging) delta = -Time.deltaTime;
+            else if (!laser.IsActive) delta = Time.deltaTime;
 
             interpolation = Mathf.Clamp(interpolation += delta, 0, 1);
 

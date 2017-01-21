@@ -13,7 +13,7 @@ namespace DestroyAllEarthlings
         private ProgressBarBehaviour shipEnergy;
 
         [SerializeField]
-        public GameObject laserEffects;
+        private GameObject laserEffects;
 
         [SerializeField]
         private ParticleSystem laserSparks;
@@ -31,7 +31,7 @@ namespace DestroyAllEarthlings
         private AudioSource laserStopAudio;
 
         [SerializeField]
-        public GameObject laserChargeBeam;
+        private GameObject laserChargeBeam;
 
         [SerializeField]
         private GameObject smokeAndSparks;
@@ -44,10 +44,14 @@ namespace DestroyAllEarthlings
 
         private int laserChargeFlag;
 
+        public bool IsActive { get; set; }
+
+        public bool IsCharging { get; set; }
+
         private void Start()
         {
             // Reset and stop all effects and audio
-            laserEffects.SetActive(false);
+            laserEffects.SetActive(IsActive = false);
 
             laserSparksEmitter = laserSparks.emission;
             laserSparksEmitter.enabled = false;
@@ -55,7 +59,7 @@ namespace DestroyAllEarthlings
             laserSmokeEmitter = laserSmoke.emission;
             laserSmokeEmitter.enabled = false;
 
-            laserChargeBeam.SetActive(false);
+            laserChargeBeam.SetActive(IsCharging = false);
             smokeAndSparks.SetActive(false);
             smokeAndSparks.SetActive(true);
 
@@ -71,7 +75,7 @@ namespace DestroyAllEarthlings
             {
                 laserChargeFlag = 0;
                 laserChargeAudio.Play();
-                laserChargeBeam.SetActive(true);
+                laserChargeBeam.SetActive(IsCharging = true);
                 charging = StartCoroutine(LaserChargeWait());
             }
 
@@ -81,15 +85,15 @@ namespace DestroyAllEarthlings
                 if (charging != null) StopCoroutine(charging);
                 charging = null;
                 laserChargeFlag = 1;
-                laserEffects.SetActive(false);
+                laserEffects.SetActive(IsActive = false);
                 laserSparksEmitter.enabled = false;
                 laserSmokeEmitter.enabled = false;
                 laserAudio.Stop();
                 laserStopAudio.Play();
-                laserChargeBeam.SetActive(false);
+                laserChargeBeam.SetActive(IsCharging = false);
             }
 
-            this.shipEnergy.Value += laserEffects.activeSelf ? -1 : 1;
+            this.shipEnergy.Value += IsActive ? -1 : 1;
         }
 
         private IEnumerator LaserChargeWait()
@@ -99,7 +103,7 @@ namespace DestroyAllEarthlings
 
             if (laserChargeFlag == 0)
             {
-                laserEffects.SetActive(true);
+                laserEffects.SetActive(IsActive = true);
                 laserSparksEmitter.enabled = true;
                 laserSmokeEmitter.enabled = true;
                 laserAudio.Play();

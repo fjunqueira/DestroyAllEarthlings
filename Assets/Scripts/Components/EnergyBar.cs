@@ -8,29 +8,20 @@ namespace DestroyAllEarthlings
     public class EnergyBar : MonoBehaviour
     {
         [SerializeField]
-        private ProgressBarBehaviour BarBehaviour;
-        [SerializeField]
-        private float UpdateDelay = 2f;
+        private ProgressBarBehaviour barBehaviour;
 
         private void Start()
         {
-            BarBehaviour.Value = 100;
+            barBehaviour.Value = 100;
+        }
 
-            //decrease percentage, decrease light, fire lazer, etc
-            Observable.EveryUpdate()
-                .Where(x => Input.GetButton("Fire1") && BarBehaviour.Value > 0)
-                .Subscribe(_ =>
-                {
-                    BarBehaviour.Value -= Time.deltaTime;
-                });
+        private void Update()
+        {
+            if (Input.GetButton("Fire1") && barBehaviour.Value > 0)
+                barBehaviour.Value -= Time.deltaTime;
 
-            //increase percentage, increase lights, etc
-            Observable.EveryUpdate()
-                .Where(x => !Input.GetButton("Fire1") && BarBehaviour.Value < 100)
-                .Subscribe(_ =>
-                {
-                    BarBehaviour.Value += Time.deltaTime;
-                });
+            if (!Input.GetButton("Fire1") && barBehaviour.Value < 100)
+                barBehaviour.Value += Time.deltaTime;
         }
     }
 }
