@@ -3,34 +3,45 @@ using System.Collections;
 using UniRx;
 using UniRx.Triggers;
 using System;
+using ProgressBar;
 
 namespace DestroyAllEarthlings
 {
     public class Laser : MonoBehaviour
     {
         [SerializeField]
-        private GameObject laserEffects;
+        private ProgressBarBehaviour shipEnergy;
+
+        [SerializeField]
+        public GameObject laserEffects;
+
         [SerializeField]
         private ParticleSystem laserSparks;
+
         [SerializeField]
         private ParticleSystem laserSmoke;
+
         [SerializeField]
         private AudioSource laserChargeAudio;
+
         [SerializeField]
         private AudioSource laserAudio;
+
         [SerializeField]
         private AudioSource laserStopAudio;
+
         [SerializeField]
-        private GameObject laserChargeBeam;
+        public GameObject laserChargeBeam;
+
         [SerializeField]
         private GameObject smokeAndSparks;
-        [SerializeField]
-        private GameObject scorchMark;
 
-        private GameObject scorchMarkClone;
         private ParticleSystem.EmissionModule laserSparksEmitter;
+
         private ParticleSystem.EmissionModule laserSmokeEmitter;
+
         private Coroutine charging;
+
         private int laserChargeFlag;
 
         private void Start()
@@ -48,8 +59,6 @@ namespace DestroyAllEarthlings
             smokeAndSparks.SetActive(false);
             smokeAndSparks.SetActive(true);
 
-            scorchMarkClone = Instantiate(scorchMark);
-
             laserChargeAudio.Stop();
             laserAudio.Stop();
             laserStopAudio.Stop();
@@ -58,7 +67,7 @@ namespace DestroyAllEarthlings
         private void Update()
         {
             // Fire laser when left mouse button is pressed
-            if (Input.GetButtonDown("Fire1") && charging == null)
+            if (Input.GetButtonDown("Fire1") && charging == null && shipEnergy.Value > 0)
             {
                 laserChargeFlag = 0;
                 laserChargeAudio.Play();
@@ -67,7 +76,7 @@ namespace DestroyAllEarthlings
             }
 
             // Stop laser if left mouse button is released
-            if (Input.GetButtonUp("Fire1"))
+            if (Input.GetButtonUp("Fire1") || shipEnergy.Value <= 0)
             {
                 if (charging != null) StopCoroutine(charging);
                 charging = null;
@@ -79,6 +88,8 @@ namespace DestroyAllEarthlings
                 laserStopAudio.Play();
                 laserChargeBeam.SetActive(false);
             }
+
+            this.shipEnergy.Value += laserEffects.activeSelf ? -1 : 1;
         }
 
         private IEnumerator LaserChargeWait()
@@ -92,7 +103,6 @@ namespace DestroyAllEarthlings
                 laserSparksEmitter.enabled = true;
                 laserSmokeEmitter.enabled = true;
                 laserAudio.Play();
-                //ScorchMark.SetActive(true);
                 laserChargeFlag = 0;
             }
 
