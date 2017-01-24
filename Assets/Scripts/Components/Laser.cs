@@ -71,7 +71,7 @@ namespace DestroyAllEarthlings
         private void Update()
         {
             // Fire laser when left mouse button is pressed
-            if (Input.GetButtonDown("Fire1") && charging == null && shipEnergy.Value > 0)
+            if (Input.GetButtonDown("Fire1") && charging == null && shipEnergy.Value >= 100)
             {
                 laserChargeFlag = 0;
                 laserChargeAudio.Play();
