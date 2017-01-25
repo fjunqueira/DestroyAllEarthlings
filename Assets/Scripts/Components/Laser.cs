@@ -80,7 +80,7 @@ namespace DestroyAllEarthlings
             }
 
             // Stop laser if left mouse button is released
-            if (Input.GetButtonUp("Fire1") || shipEnergy.Value <= 0)
+            if ((Input.GetButtonUp("Fire1") && (IsActive || IsCharging)) || shipEnergy.Value <= 0)
             {
                 if (charging != null) StopCoroutine(charging);
                 charging = null;
