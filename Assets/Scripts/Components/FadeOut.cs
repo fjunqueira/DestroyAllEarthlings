@@ -6,6 +6,12 @@ using UniRx.Triggers;
 
 public class FadeOut : MonoBehaviour
 {
+    [SerializeField]
+    private float speed = 1;
+
+    [SerializeField]
+    private int fadeAfter = 5;
+
     private void Start()
     {
         var material = this.GetComponent<Renderer>().material;
@@ -16,7 +22,7 @@ public class FadeOut : MonoBehaviour
 
         var interpolation = Observable.EveryUpdate()
             .Select(_ => Time.deltaTime)
-            .Scan(0.0f, (acc, next) => acc + (next / 10));
+            .Scan(0.0f, (acc, next) => (acc + (next / 10) * speed));
 
         var update = Observable.FromCoroutine(FadeAfter).ContinueWith(interpolation);
 
@@ -27,6 +33,6 @@ public class FadeOut : MonoBehaviour
 
     private IEnumerator FadeAfter()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(fadeAfter);
     }
 }

@@ -1,0 +1,63 @@
+SEIZED v2.0; January 14, 2002
+Windows TrueType font, free for personal use
+http://go.to/disneyfonts
+
+Please include this Seized.txt file with any redistribution.
+
+INSTALLATION
+------------
+To install any TrueType font, simply copy it to your Windows\Fonts folder.
+
+------
+SEIZED is an original font family based on designs used in Disney World's "Alien Encounter" attraction. Version 2.0 takes the name "Seized Future" and features original lowercase letters with a complete set of symbols and international glyphs. "Seized Future A" contains alternate versions of some characters, numbers, and symbols. "Seized X-S" contains alien heiroglyphs in two styles -- grunge and clean -- as well as several versions of the "X-S TECH" logos.
+
+Thanks to Kronos (www.tombsweettomb.com) for providing the alien glyphs and "Alien Encounter" logo.
+
+
+SEIZED FUTURE
+-------------
+All of the capitals are based on the lettering from Alien Encounter, with the exception of 'J' 'K' and 'Q,' which I've not seen used in the attraction (if you have samples of these, please contact me). The numerals '1' and '0' are also modeled after the attraction lettering, but the remainder of the characters are original designs drawn in the same theme.
+
+SEIZED FUTURE A
+---------------
+Alternate versions of 'A' 'E' 'F' and 'H' are based on alternate lettering used in Disney World's Tomorrowland and at Tokyo Disney Sea. Alternate versions of 'N' and 'R' are based on text from an early concept drawing of Alien Encounter. The alternate 'B' 'C' 'D' 'G' 'J' and 'M' were just me playing.
+
+The lowercase have quite a few alternates, mostly due to my own indecision on how they should look! Generally, the regular versions resemble the shape of an alien's left eye, while the alternates resemble an alien's right eye. The numerals 1, 3, 4, 6, and 9 also have alternates, as do some of the symbols and international characters.
+
+SEIZED X-S
+----------
+The uppercase A-U contain drawings of the alien heiroglyphs as they appear outside of the attraction, in a hand-painted look that closely resembles the actual glyphs. The lowercase a-u contain the same glyphs in a sharper, cleaned-up state. Kronos rendered all of these based on photos I sent him. He also provided the "Alien Encounter" logo found in space 'V.'
+
+The "XS" logo (as well as the larger "X-S TECH" logo) can be more accurately rendered by layering the fill version on top of the dimension version and coloring each appropriately. To make things easier, the pairs are kerned so that they overlap precisely. If your publishing software supports kerning, type an 'x,' then a space, then a 'X.' Make the 'X' a dark color and the 'x' a light color. Remove the space and the kerning should kick in so that both characters overlap. The same effect can be achieved in programs that support layers by placing each part of the logo on a separate layer and lining them up manually.
+
+As an afterthought, I also included fixed-width versions of the numerals (just in case anyone wants to use them in a spreadsheet or business report).
+
+SEIZED X-S CHARACTER MAP
+------------------------
+0-9:	Numerals in fixed width format
+
+a-u:	Alien glyphs in clean style
+A-U:	Alien glyphs in grunge style
+
+x:	"XS" logo (fill)
+X:	"XS" logo (dimension)
+y:	"X-S TECH" logo with outline (fill)
+Y:	"X-S TECH" logo with outline (dimension)
+z:	"X-S TECH" logo no outline (fill)
+Z:	"X-S TECH" logo no outline (dimension)
+
+v:	"XS" circle logo
+w:	"XS" logo plain
+[:	"X-S TECH" logo plain
+
+V:	"Alien Encounter" logo
+W:	Tomorrowland Interplanetary Convention Center logo
+
+alt+195-205: Miscellaneous alternate characters (the rejects)
+alt+206-208: Seized construction set (simple shapes used in the creation of Seized)
+alt+230:     Alternate 'ae' ligature that will never be used by anyone ever
+
+
+CONTACT
+-------
+Comments, questions, complaints, love notes - please send them to jcmagic@yahoo.com.

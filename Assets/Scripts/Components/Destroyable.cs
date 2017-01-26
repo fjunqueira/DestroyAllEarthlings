@@ -4,11 +4,21 @@ using System.Collections;
 using UniRx;
 using UniRx.Triggers;
 using System;
+using UnityEngine.UI;
 
 namespace DestroyAllEarthlings
 {
     public class Destroyable : MonoBehaviour
     {
+        [SerializeField]
+        private int points = 10;
+
+        [SerializeField]
+        private Text score;
+
+        [SerializeField]
+        private TextMesh pointsMesh;
+
         [SerializeField]
         private Collider building;
 
@@ -17,10 +27,17 @@ namespace DestroyAllEarthlings
 
         private void Start()
         {
+            pointsMesh.text = points.ToString();
+
             building.OnTriggerEnterAsObservable()
                 .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
                 .Subscribe(collision =>
                 {
+                    pointsMesh.transform.position = pointsMesh.transform.position * 1.1f;
+                    pointsMesh.gameObject.SetActive(true);
+
+                    score.text = (Convert.ToInt32(score.text) + points).ToString();
+
                     building.gameObject.SetActive(false);
                     destructionFx.SetActive(true);
 
