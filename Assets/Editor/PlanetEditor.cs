@@ -9,7 +9,7 @@ namespace DestroyAllEarthlings.EditorExtensions
     [CustomEditor(typeof(Planet))]
     public class PlanetEditor : Editor
     {
-        private const int LEFT_MOUSE_BUTTON = 0;
+        private const int LEFT_MOUSE_BUTTON = 1;
 
         private static Planet planet;
 
@@ -17,12 +17,18 @@ namespace DestroyAllEarthlings.EditorExtensions
 
         static PlanetEditor()
         {
-            var sceneGUIObservable = Observable.FromEvent<SceneView.OnSceneFunc, Event>(
+            var guiObservable = Observable.FromEvent<SceneView.OnSceneFunc, Event>(
                     h => (view) => h(Event.current),
                     h => SceneView.onSceneGUIDelegate += h,
                     h => SceneView.onSceneGUIDelegate -= h);
 
-            sceneGUIObservable
+            var controlKeyDown = guiObservable.Where(currentEvent => currentEvent.isKey && currentEvent.keyCode == KeyCode.LeftControl && currentEvent.type == EventType.KeyDown);
+
+            var controlKeyUp = guiObservable.Where(currentEvent => currentEvent.isKey && currentEvent.keyCode == KeyCode.LeftControl && currentEvent.type == EventType.KeyUp);
+
+            var rightMouseDown = guiObservable.Where(currentEvent => currentEvent.isMouse && currentEvent.button == LEFT_MOUSE_BUTTON && currentEvent.type == EventType.MouseDown);
+
+            guiObservable
                 .Where(currentEvent => currentEvent.isKey && currentEvent.keyCode == KeyCode.Space)
                 .Subscribe(obj =>
                 {
@@ -34,8 +40,8 @@ namespace DestroyAllEarthlings.EditorExtensions
                         planet.transform.rotation;
                 });
 
-            sceneGUIObservable
-                 .Where(currentEvent => currentEvent.isMouse && currentEvent.button == LEFT_MOUSE_BUTTON && currentEvent.type == EventType.MouseDown)
+            controlKeyDown
+                 .SelectMany(_ => rightMouseDown.TakeUntil(controlKeyUp))
                  .Select(currentEvent => new
                  {
                      mousePosition = currentEvent.mousePosition,
@@ -47,7 +53,7 @@ namespace DestroyAllEarthlings.EditorExtensions
                      RaycastHit hit;
                      Ray ray = HandleUtility.GUIPointToWorldRay(data.mousePosition);
 
-                     if (Physics.Raycast(ray, out hit) && hit.collider.GetComponent<Planet>() != null)
+                     if (Physics.Raycast(ray, out hit))
                      {
                          var obj = (GameObject)PrefabUtility.InstantiatePrefab(data.prefab);
 
@@ -57,7 +63,7 @@ namespace DestroyAllEarthlings.EditorExtensions
 
                          var centerOffset = 1 + ((colliderHeight / 2) / hit.point.magnitude);
 
-                         obj.transform.position = FacePicker.ToTriangle(hit).Centroid * centerOffset;
+                         obj.transform.position = hit.point * centerOffset;
                          obj.transform.up = hit.normal;
                          obj.transform.parent = planet.transform;
 
@@ -66,7 +72,7 @@ namespace DestroyAllEarthlings.EditorExtensions
                              gravityBody
                                 .GetType()
                                 .GetField("attractor", BindingFlags.Instance | BindingFlags.NonPublic)
-                                .SetValue(gravityBody, hit.collider.GetComponent<GravityAttractor>());
+                                .SetValue(gravityBody, planet.GetComponent<GravityAttractor>());
                          }
                      }
                  });

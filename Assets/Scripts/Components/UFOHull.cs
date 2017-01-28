@@ -8,6 +8,9 @@ namespace DestroyAllEarthlings
     public class UFOHull : MonoBehaviour
     {
         [SerializeField]
+        private LayerMask layerMask;
+
+        [SerializeField]
         private ProgressBarBehaviour shipEnergy;
 
         [SerializeField]
@@ -66,7 +69,7 @@ namespace DestroyAllEarthlings
             {
                 RaycastHit hit;
 
-                if (Physics.Raycast(transform.position, -ufo.transform.up, out hit))
+                if (Physics.Raycast(transform.position, -ufo.transform.up, out hit, float.MaxValue, layerMask))
                 {
                     laser.transform.position = hit.point + (hit.point.normalized * 4);
                     laser.transform.rotation = ufo.transform.rotation;
