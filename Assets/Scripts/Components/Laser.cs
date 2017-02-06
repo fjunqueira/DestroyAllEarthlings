@@ -50,7 +50,6 @@ namespace DestroyAllEarthlings
 
         private void Start()
         {
-            // Reset and stop all effects and audio
             laserEffects.SetActive(IsActive = false);
 
             laserSparksEmitter = laserSparks.emission;
@@ -70,7 +69,6 @@ namespace DestroyAllEarthlings
 
         private void Update()
         {
-            // Fire laser when left mouse button is pressed
             if (Input.GetButtonDown("Fire1") && charging == null && shipEnergy.Value > 0)
             {
                 laserChargeFlag = 0;
@@ -79,7 +77,6 @@ namespace DestroyAllEarthlings
                 charging = StartCoroutine(LaserChargeWait());
             }
 
-            // Stop laser if left mouse button is released
             if ((Input.GetButtonUp("Fire1") && (IsActive || IsCharging)) || shipEnergy.Value <= 0)
             {
                 if (charging != null) StopCoroutine(charging);
@@ -98,7 +95,6 @@ namespace DestroyAllEarthlings
 
         private IEnumerator LaserChargeWait()
         {
-            // Wait for laser to charge
             yield return new WaitForSeconds(1.4f);
 
             if (laserChargeFlag == 0)

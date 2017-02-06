@@ -15,7 +15,7 @@ public class FadeOut : MonoBehaviour
     private void Start()
     {
         var material = this.GetComponent<Renderer>().material;
-
+        
         var startingColor = material.color;
 
         var transparentColor = new Color(startingColor.r, startingColor.g, startingColor.b, 0.0f);

@@ -55,7 +55,7 @@ namespace DestroyAllEarthlings
 
             interpolation = Mathf.Clamp(interpolation += delta, 0, 1);
 
-            hullLight.spotAngle = Mathf.LerpAngle(5, 70, interpolation);
+            hullLight.spotAngle = Mathf.LerpAngle(5, 100, interpolation);
 
             var color = Color.Lerp(blue, green, interpolation);
 

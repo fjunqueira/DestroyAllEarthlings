@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LookAt : MonoBehaviour
+public class PointsText : MonoBehaviour
 {
     [SerializeField]
     private Camera cam;
 
     private void Update()
     {
-        transform.LookAt(cam.transform, cam.transform.up);
-		transform.forward = -transform.forward;
+        transform.rotation = cam.transform.rotation;
     }
 }
