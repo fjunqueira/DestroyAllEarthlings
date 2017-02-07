@@ -14,7 +14,7 @@ namespace DestroyAllEarthlings
         private int points = 10;
 
         [SerializeField]
-        private Text score;
+        private HudScore hudScore;
 
         [SerializeField]
         private TextMesh pointsMesh;
@@ -33,10 +33,7 @@ namespace DestroyAllEarthlings
                 .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
                 .Subscribe(collision =>
                 {
-                    pointsMesh.transform.position = pointsMesh.transform.position * 1.1f;
-                    pointsMesh.gameObject.SetActive(true);
-
-                    score.text = (Convert.ToInt32(score.text) + points).ToString();
+                    ShowPoints();
 
                     building.gameObject.SetActive(false);
                     destructionFx.SetActive(true);
@@ -48,6 +45,13 @@ namespace DestroyAllEarthlings
 
                     children.First().OnDestroyAsObservable().Subscribe(_ => Destroy(this.gameObject)).AddTo(this);
                 });
+        }
+
+        private void ShowPoints()
+        {
+            pointsMesh.transform.position = pointsMesh.transform.position * 1.1f;
+            pointsMesh.gameObject.SetActive(true);
+            hudScore.Score += points;
         }
     }
 }

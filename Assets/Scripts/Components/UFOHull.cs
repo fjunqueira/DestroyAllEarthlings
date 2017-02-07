@@ -11,9 +11,6 @@ namespace DestroyAllEarthlings
         private LayerMask layerMask;
 
         [SerializeField]
-        private ProgressBarBehaviour shipEnergy;
-
-        [SerializeField]
         private Laser laser;
 
         [SerializeField]
