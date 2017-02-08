@@ -11,7 +11,7 @@ namespace DestroyAllEarthlings
     public class Destroyable : MonoBehaviour
     {
         [SerializeField]
-        private int points = 10;
+        private int humanCount = 10;
 
         [SerializeField]
         private HudScore hudScore;
@@ -25,9 +25,11 @@ namespace DestroyAllEarthlings
         [SerializeField]
         private GameObject destructionFx;
 
+        public int HumanCount { get { return this.humanCount; } }
+
         private void Start()
         {
-            pointsMesh.text = points.ToString();
+            pointsMesh.text = humanCount.ToString();
 
             building.OnTriggerEnterAsObservable()
                 .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
@@ -49,9 +51,16 @@ namespace DestroyAllEarthlings
 
         private void ShowPoints()
         {
-            pointsMesh.transform.position = pointsMesh.transform.position * 1.1f;
-            pointsMesh.gameObject.SetActive(true);
-            hudScore.Score += points;
+            if (humanCount > 0)
+            {
+                pointsMesh.transform.position = pointsMesh.transform.position * 1.1f;
+
+                var clampedCount = Mathf.Clamp((float)humanCount, 3.0f, 7.3f) / 2;
+
+                pointsMesh.transform.localScale = new Vector3(clampedCount, clampedCount, clampedCount);
+                pointsMesh.gameObject.SetActive(true);
+                hudScore.RemainingHumans -= humanCount;
+            }
         }
     }
 }
