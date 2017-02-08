@@ -54,10 +54,6 @@ namespace DestroyAllEarthlings
             if (humanCount > 0)
             {
                 pointsMesh.transform.position = pointsMesh.transform.position * 1.1f;
-
-                var clampedCount = Mathf.Clamp((float)humanCount, 3.0f, 7.3f) / 2;
-
-                pointsMesh.transform.localScale = new Vector3(clampedCount, clampedCount, clampedCount);
                 pointsMesh.gameObject.SetActive(true);
                 hudScore.RemainingHumans -= humanCount;
             }

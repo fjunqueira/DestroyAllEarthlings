@@ -30,6 +30,9 @@ namespace DestroyAllEarthlings
 
         private void Update()
         {
+            hudTimer.text = string.Format("Time: {0}", Mathf.Round(Mathf.Clamp(gameDuration -= Time.deltaTime, 0, gameDuration)));
+            hudScore.text = string.Format("Remaining Humans: {0}", RemainingHumans);
+
             if (RemainingHumans <= 0)
             {
                 // Victory screen
@@ -42,9 +45,6 @@ namespace DestroyAllEarthlings
                 if (Input.GetKeyUp(KeyCode.Return)) SceneManager.LoadScene(0);
                 return;
             }
-
-            hudTimer.text = string.Format("Time: {0}", Mathf.Round(gameDuration -= Time.deltaTime));
-            hudScore.text = string.Format("Remaining Humans: {0}", RemainingHumans);
         }
     }
 }
