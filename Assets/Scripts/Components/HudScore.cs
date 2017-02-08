@@ -30,7 +30,9 @@ namespace DestroyAllEarthlings
 
         private void Update()
         {
-            hudTimer.text = string.Format("Time: {0}", Mathf.Round(Mathf.Clamp(gameDuration -= Time.deltaTime, 0, gameDuration)));
+            if (RemainingHumans != 0)
+                hudTimer.text = string.Format("Time: {0}", Mathf.Round(Mathf.Clamp(gameDuration -= Time.deltaTime, 0, gameDuration)));
+            
             hudScore.text = string.Format("Remaining Humans: {0}", RemainingHumans);
 
             if (RemainingHumans <= 0)
