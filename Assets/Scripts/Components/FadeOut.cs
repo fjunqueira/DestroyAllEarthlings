@@ -25,14 +25,14 @@ namespace DestroyAllEarthlings
 
             var transparentColor = startingColors.Select(startingColor => new Color(startingColor.r, startingColor.g, startingColor.b, 0.0f));
 
-            var zippedMaterials = materials.Zip3(startingColors, transparentColor, 
+            var zippedMaterials = materials.Zip3(startingColors, transparentColor,
                 (material, startingColor, endingColor) => new { material, startingColor, endingColor });
 
             var update = Observable.FromCoroutine(FadeAfter).ContinueWith(Observable.EveryUpdate());
 
             update.Subscribe(_ =>
             {
-                interpolation += (Time.deltaTime / 100) * speed;
+                interpolation += Time.deltaTime * speed;
 
                 foreach (var zip in zippedMaterials)
                     zip.material.color = Color.Lerp(zip.startingColor, zip.endingColor, interpolation);
