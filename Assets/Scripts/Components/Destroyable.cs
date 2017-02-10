@@ -4,6 +4,7 @@ using System.Collections;
 using UniRx;
 using UniRx.Triggers;
 using System;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 namespace DestroyAllEarthlings
@@ -25,6 +26,9 @@ namespace DestroyAllEarthlings
         [SerializeField]
         private GameObject destructionFx;
 
+        [SerializeField]
+        private List<AudioClip> destructionSounds;
+
         public int HumanCount { get { return this.humanCount; } }
 
         private void Start()
@@ -35,7 +39,9 @@ namespace DestroyAllEarthlings
                 .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
                 .Subscribe(collision =>
                 {
-                    ShowPoints();
+                    this.ShowPoints();
+
+                    this.PlayDestructionSounds();
 
                     building.gameObject.SetActive(false);
                     destructionFx.SetActive(true);
@@ -47,6 +53,17 @@ namespace DestroyAllEarthlings
 
                     children.First().OnDestroyAsObservable().Subscribe(_ => Destroy(this.gameObject)).AddTo(this);
                 });
+        }
+
+        private void PlayDestructionSounds()
+        {
+            foreach (var sound in this.destructionSounds)
+            {
+                var audioSource = gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
+                audioSource.clip = sound;
+                audioSource.volume = 1f;
+                audioSource.Play();
+            }
         }
 
         private void ShowPoints()
