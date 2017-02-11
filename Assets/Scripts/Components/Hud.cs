@@ -37,22 +37,14 @@ namespace DestroyAllEarthlings
 
         private float interpolation;
 
+        private bool blinking = false;
+
         private void Start()
         {
             RemainingHumans = GameObject.FindObjectsOfType<Destroyable>()
                 .Where(x => x.HumanCount > 0)
                 .Select(x => x.HumanCount)
                 .Sum();
-
-            Observable.EveryUpdate()
-                .Where(_ => interpolation >= 1)
-                .Throttle(TimeSpan.FromSeconds(2))
-                .Select(_ => gameDuration <= 0 ? gameOver : victory)
-                .Subscribe(endText =>
-                {
-                    pressEnter.gameObject.SetActive(endText.gameObject.activeSelf);
-                    endText.gameObject.SetActive(!endText.gameObject.activeSelf);
-                }).AddTo(this);
         }
 
         private void Update()
@@ -64,16 +56,32 @@ namespace DestroyAllEarthlings
                 interpolation = Mathf.Clamp(interpolation + Time.deltaTime, 0, 1);
                 this.image.material.SetFloat("_Size", Mathf.Lerp(0, 2f, interpolation));
 
+                if (!blinking) StartCoroutine(BlinkText());
+
                 if (Input.GetKeyUp(KeyCode.Return))
                 {
                     ClearScreen();
                     SceneManager.LoadScene(0);
                 }
             }
-            else
-            {
+
+            if (RemainingHumans > 0)
                 hudTimer.text = string.Format("Time: {0}", Mathf.Round(Mathf.Clamp(gameDuration -= Time.deltaTime, 0, gameDuration)));
-                hudScore.text = string.Format("Remaining Humans: {0}", RemainingHumans);
+            hudScore.text = string.Format("Remaining Humans: {0}", RemainingHumans);
+        }
+
+        private IEnumerator BlinkText()
+        {
+            blinking = true;
+
+            while (true)
+            {
+                var endText = gameDuration <= 0 ? gameOver : victory;
+
+                pressEnter.gameObject.SetActive(endText.gameObject.activeSelf);
+                endText.gameObject.SetActive(!endText.gameObject.activeSelf);
+
+                yield return new WaitForSeconds(2);
             }
         }
 
@@ -84,6 +92,7 @@ namespace DestroyAllEarthlings
             gameOver.gameObject.SetActive(false);
             pressEnter.gameObject.SetActive(false);
         }
+
         private void OnApplicationQuit()
         {
             this.image.material.SetFloat("_Size", 0);
