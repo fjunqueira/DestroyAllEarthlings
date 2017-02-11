@@ -15,7 +15,7 @@ namespace DestroyAllEarthlings
         private int humanCount = 10;
 
         [SerializeField]
-        private HudScore hudScore;
+        private Hud hudScore;
 
         [SerializeField]
         private TextMesh pointsMesh;
