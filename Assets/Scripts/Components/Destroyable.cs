@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace DestroyAllEarthlings
 {
-    public class Destroyable : MonoBehaviour
+    public class Destroyable :  MonoBehaviour, IPlanetElement
     {
         [SerializeField]
         private int humanCount = 10;

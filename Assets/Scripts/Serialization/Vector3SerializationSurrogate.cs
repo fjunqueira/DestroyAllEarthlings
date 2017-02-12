@@ -12,7 +12,6 @@ namespace DestroyAllEarthlings
             info.AddValue("x", v3.x);
             info.AddValue("y", v3.y);
             info.AddValue("z", v3.z);
-            Debug.Log(v3);
         }
 
         public System.Object SetObjectData(System.Object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector)

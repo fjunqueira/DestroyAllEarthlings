@@ -30,6 +30,8 @@ namespace DestroyAllEarthlings
 
         public bool IsWalkable { get; set; }
 
+        public bool IsDestination { get; set; }
+
         public void RaiseWeight(float raise)
         {
             this.weight += raise;

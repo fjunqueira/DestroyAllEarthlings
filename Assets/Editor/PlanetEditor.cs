@@ -47,7 +47,7 @@ namespace DestroyAllEarthlings.EditorExtensions
                      mousePosition = currentEvent.mousePosition,
                      prefab = PrefabUtility.GetPrefabParent(Selection.activeObject) as GameObject
                  })
-                 .Where(x => x.prefab != null && x.prefab.GetComponentInChildren<Destroyable>() != null)
+                 .Where(x => x.prefab != null && x.prefab.GetComponentInChildren<IPlanetElement>() != null)
                  .Subscribe(data =>
                  {
                      RaycastHit hit;
@@ -63,7 +63,9 @@ namespace DestroyAllEarthlings.EditorExtensions
 
                          var centerOffset = 1 + ((colliderHeight / 2) / hit.point.magnitude);
 
-                         obj.transform.position = hit.point * centerOffset;
+                         var triangle = FacePicker.ToTriangle(hit);
+
+                         obj.transform.position = triangle.Centroid * centerOffset;
                          obj.transform.up = hit.normal;
                          obj.transform.parent = planet.transform;
 
@@ -73,6 +75,21 @@ namespace DestroyAllEarthlings.EditorExtensions
                                 .GetType()
                                 .GetField("attractor", BindingFlags.Instance | BindingFlags.NonPublic)
                                 .SetValue(gravityBody, planet.GetComponent<GravityAttractor>());
+                         }
+
+                         var pathfindingObstacle = obj.GetComponent<PathfindingObstacle>();
+
+                         if (pathfindingObstacle != null)
+                         {
+                             pathfindingObstacle
+                                .GetType()
+                                .GetField("blockingNodePosition", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .SetValue(pathfindingObstacle, triangle.Centroid);
+
+                             pathfindingObstacle
+                                .GetType()
+                                .GetField("navMesh", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .SetValue(pathfindingObstacle, planet.GetComponent<PlanetNavMesh>());
                          }
                      }
                  });
