@@ -7,6 +7,8 @@ using System;
 
 namespace DestroyAllEarthlings
 {
+
+    
     public class Human : MonoBehaviour
     {
         [SerializeField]
@@ -54,7 +56,7 @@ namespace DestroyAllEarthlings
 
                 transform.position = Vector3.Lerp(currentPosition, nextPosition, interpolation);
 
-                transform.LookAt(nextPosition, interpolation > 0.5f ? target.Triangle.FaceNormal : current.Triangle.FaceNormal);
+                transform.LookAt(nextPosition, current.Triangle.FaceNormal);
 
                 if (interpolation >= 1.0f)
                 {
@@ -69,7 +71,7 @@ namespace DestroyAllEarthlings
                         current = target;
                         target = path.Shift() as PlanetNode;
                         currentPosition = nextPosition;
-                        nextPosition = GetNextPosition(current, target);
+                        nextPosition = path.Any() ? GetNextPosition(current, target) : target.Position;
                     }
                 }
             }).AddTo(this);
