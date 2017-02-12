@@ -14,9 +14,12 @@ namespace DestroyAllEarthlings
 
         private void Awake()
         {
-            using (var stream = new FileStream("Assets/Grids/" + this.MeshName, FileMode.Open))
+            var planetGrid = Resources.Load("EarthGrid") as TextAsset;
+            
+            using (var stream = new MemoryStream(planetGrid.bytes))
             {
                 var formatter = Formatter.CreateFormatter();
+
                 this.grid = formatter.Deserialize(stream) as PlanetGrid;
             }
         }
@@ -28,7 +31,6 @@ namespace DestroyAllEarthlings
 
         public PathfindingNode GetNodeByPosition(Vector3 position)
         {
-            Debug.Log(this.grid);
             return this.grid.GetNodeByPosition(position);
         }
     }

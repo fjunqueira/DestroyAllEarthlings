@@ -34,13 +34,20 @@ namespace DestroyAllEarthlings.EditorExtensions
 
             materials = navigationMesh.GetComponent<MeshRenderer>().sharedMaterials;
             subGroups = Enumerable.Range(0, materials.Count()).ToArray();
-            walkable = Enumerable.Repeat(true, subGroups.Count()).ToArray();
+
+            walkable = new bool[materials.Length];
+
+            foreach (var group in subGroups)
+                walkable[group] = EditorPrefs.GetBool("MeshExporter_Walkable" + group);
         }
 
         public void OnDisable()
         {
             EditorPrefs.SetString("MeshExporter_MeshName", navigationMesh.MeshName);
             EditorPrefs.SetInt("MeshExporter_MeshRadius", meshRadius);
+
+            foreach (var group in subGroups)
+                EditorPrefs.SetBool("MeshExporter_Walkable" + group, walkable[group]);
         }
 
         private void Mesh()
@@ -109,7 +116,7 @@ namespace DestroyAllEarthlings.EditorExtensions
 
             Debug.Log("Done!");
 
-            using (var stream = new FileStream("Assets/Grids/" + navigationMesh.MeshName, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var stream = new FileStream(string.Format("Assets/Resources/{0}.bytes", navigationMesh.MeshName), FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 var formatter = Formatter.CreateFormatter();
 

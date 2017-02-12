@@ -19,7 +19,9 @@ namespace DestroyAllEarthlings
 
         private void OnDestroy()
         {
-            navMesh.GetNodeByPosition(blockingNodePosition).IsWalkable = true;
+            Debug.Log("Calling on destroy");
+            if (navMesh != null)
+                navMesh.GetNodeByPosition(blockingNodePosition).IsWalkable = true;
         }
     }
 }
