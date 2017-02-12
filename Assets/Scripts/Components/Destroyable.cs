@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace DestroyAllEarthlings
 {
-    public class Destroyable :  MonoBehaviour, IPlanetElement
+    public class Destroyable : MonoBehaviour, IPlanetElement
     {
         [SerializeField]
         private int humanCount = 10;
@@ -29,6 +29,9 @@ namespace DestroyAllEarthlings
         [SerializeField]
         private List<AudioClip> destructionSounds;
 
+        [SerializeField]
+        private List<Human> humans;
+
         public int HumanCount { get { return this.humanCount; } }
 
         private void Start()
@@ -39,6 +42,8 @@ namespace DestroyAllEarthlings
                 .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
                 .Subscribe(collision =>
                 {
+                    this.StartFleeingHumans();
+
                     this.ShowPoints();
 
                     this.PlayDestructionSounds();
@@ -53,6 +58,11 @@ namespace DestroyAllEarthlings
 
                     children.First().OnDestroyAsObservable().Subscribe(_ => Destroy(this.gameObject)).AddTo(this);
                 });
+        }
+
+        private void StartFleeingHumans()
+        {
+            foreach (var human in humans) human.gameObject.SetActive(true);
         }
 
         private void PlayDestructionSounds()

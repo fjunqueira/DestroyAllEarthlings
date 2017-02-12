@@ -12,7 +12,7 @@ namespace DestroyAllEarthlings
 
         public string MeshName { get; set; }
 
-        private void Start()
+        private void Awake()
         {
             using (var stream = new FileStream("Assets/Grids/" + this.MeshName, FileMode.Open))
             {
@@ -21,13 +21,14 @@ namespace DestroyAllEarthlings
             }
         }
 
-        public PathfindingNode[] FindPath(PathfindingNode startingNode, PathfindingNode destinationNode)
+        public PathfindingNode[] FindPath(PathfindingNode startingNode)
         {
-            return this.grid.FindPath(startingNode, destinationNode);
+            return this.grid.RunDijkstra(startingNode);
         }
 
         public PathfindingNode GetNodeByPosition(Vector3 position)
         {
+            Debug.Log(this.grid);
             return this.grid.GetNodeByPosition(position);
         }
     }

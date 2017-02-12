@@ -91,7 +91,7 @@ namespace DestroyAllEarthlings
             return FindNextNode(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap, destinationNode, maxIterations, ++currentIteration);
         }
 
-        private static PathfindingNode[] RunDijkstra<TNode>(this IPathfindingGrid<TNode> grid, PathfindingNode startingNode) where TNode : PathfindingNode
+        public static PathfindingNode[] RunDijkstra<TNode>(this IPathfindingGrid<TNode> grid, PathfindingNode startingNode) where TNode : PathfindingNode
         {
             grid.RunId = Guid.NewGuid();
 
