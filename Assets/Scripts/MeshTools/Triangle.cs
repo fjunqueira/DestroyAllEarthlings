@@ -30,7 +30,7 @@ namespace DestroyAllEarthlings
         {
             get
             {
-                return (Vector3.Cross(A, B) + Vector3.Cross(A, C) + Vector3.Cross(B, C)) / 3;
+                return Vector3.Cross(B - A, C - A);
             }
         }
 

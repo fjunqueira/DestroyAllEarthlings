@@ -7,8 +7,6 @@ using System;
 
 namespace DestroyAllEarthlings
 {
-
-    
     public class Human : MonoBehaviour
     {
         [SerializeField]
@@ -22,13 +20,6 @@ namespace DestroyAllEarthlings
         private void Start()
         {
             var path = navMesh.FindPath(navMesh.GetNodeByPosition(startingNodePosition)).ToList();
-
-            foreach (var node in path.Select(x => x as PlanetNode))
-            {
-                Debug.DrawLine(navMesh.transform.rotation * node.Triangle.A, navMesh.transform.rotation * node.Triangle.B, Color.black, 10, true);
-                Debug.DrawLine(navMesh.transform.rotation * node.Triangle.B, navMesh.transform.rotation * node.Triangle.C, Color.black, 10, true);
-                Debug.DrawLine(navMesh.transform.rotation * node.Triangle.C, navMesh.transform.rotation * node.Triangle.A, Color.black, 10, true);
-            }
 
             if (!path.Any())
             {
@@ -54,9 +45,9 @@ namespace DestroyAllEarthlings
             {
                 interpolation += Mathf.Clamp(Time.deltaTime, 0, 1);
 
-                transform.position = Vector3.Lerp(currentPosition, nextPosition, interpolation);
+                transform.position = Vector3.Lerp(currentPosition, nextPosition, interpolation) * 1.01f;
 
-                transform.LookAt(nextPosition, current.Triangle.FaceNormal);
+                transform.LookAt(nextPosition* 1.01f, current.Triangle.FaceNormal);
 
                 if (interpolation >= 1.0f)
                 {
