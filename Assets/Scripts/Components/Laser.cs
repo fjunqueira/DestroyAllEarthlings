@@ -9,8 +9,9 @@ namespace DestroyAllEarthlings
 {
     public class Laser : MonoBehaviour
     {
-        [SerializeField]
-        private ProgressBarBehaviour shipEnergy;
+        //[SerializeField]
+        //private ProgressBarBehaviour shipEnergy;
+        private float laserEnergy;
 
         [SerializeField]
         private GameObject laserEffects;
@@ -69,7 +70,7 @@ namespace DestroyAllEarthlings
 
         private void Update()
         {
-            if (Input.GetButtonDown("Fire1") && charging == null && shipEnergy.Value > 0)
+            if (Input.GetButtonDown("Fire1") && charging == null && laserEnergy > 0)
             {
                 laserChargeFlag = 0;
                 laserChargeAudio.Play();
@@ -77,7 +78,7 @@ namespace DestroyAllEarthlings
                 charging = StartCoroutine(LaserChargeWait());
             }
 
-            if ((Input.GetButtonUp("Fire1") && (IsActive || IsCharging)) || shipEnergy.Value <= 0)
+            if ((Input.GetButtonUp("Fire1") && (IsActive || IsCharging)) || laserEnergy <= 0)
             {
                 if (charging != null) StopCoroutine(charging);
                 charging = null;
@@ -90,7 +91,7 @@ namespace DestroyAllEarthlings
                 laserChargeBeam.SetActive(IsCharging = false);
             }
 
-            this.shipEnergy.Value += IsActive ? -1 : 1;
+            this.laserEnergy += IsActive ? -1 : 1;
         }
 
         private IEnumerator LaserChargeWait()

@@ -41,9 +41,10 @@ namespace DestroyAllEarthlings
 
         private void Start()
         {
+            Destroyable.destroyed += (earthlingCount) => RemainingHumans -= earthlingCount;
+
             RemainingHumans = GameObject.FindObjectsOfType<Destroyable>()
-                .Where(x => x.HumanCount > 0)
-                .Select(x => x.HumanCount)
+                .Select(destroyable => destroyable.EarthlingCount)
                 .Sum();
         }
 
@@ -66,8 +67,10 @@ namespace DestroyAllEarthlings
             }
 
             if (RemainingHumans > 0)
+            {
                 hudTimer.text = string.Format("Time: {0}", Mathf.Round(Mathf.Clamp(gameDuration -= Time.deltaTime, 0, gameDuration)));
-            hudScore.text = string.Format("Remaining Humans: {0}", RemainingHumans);
+                hudScore.text = string.Format("Remaining Humans: {0}", RemainingHumans);
+            }
         }
 
         private IEnumerator BlinkText()

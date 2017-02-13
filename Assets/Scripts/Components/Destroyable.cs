@@ -11,79 +11,67 @@ namespace DestroyAllEarthlings
 {
     public class Destroyable : MonoBehaviour, IPlanetElement
     {
-        [SerializeField]
-        private int humanCount = 10;
+        public delegate void DestroyedEventHandler(int earthlingCount);
+
+        public static event DestroyedEventHandler destroyed;
 
         [SerializeField]
-        private Hud hudScore;
+        private int earthlingCount = 10;
 
         [SerializeField]
-        private TextMesh pointsMesh;
+        protected TextMesh pointsMesh;
 
         [SerializeField]
-        private Collider building;
+        private Collider destroyableCollider;
 
         [SerializeField]
-        private GameObject destructionFx;
+        protected GameObject destructionFx;
 
         [SerializeField]
         private List<AudioClip> destructionSounds;
 
-        [SerializeField]
-        private List<Human> humans;
-
-        public int HumanCount { get { return this.humanCount; } }
+        public virtual int EarthlingCount { get { return this.earthlingCount; } }
 
         private void Start()
         {
-            pointsMesh.text = humanCount.ToString();
+            pointsMesh.text = earthlingCount.ToString();
 
-            building.OnTriggerEnterAsObservable()
-                .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
-                .Subscribe(collision =>
-                {
-                    this.StartFleeingHumans();
-
-                    this.ShowPoints();
-
-                    this.PlayDestructionSounds();
-
-                    building.gameObject.SetActive(false);
-                    destructionFx.SetActive(true);
-
-                    var children = destructionFx.GetComponentsInChildren<Rigidbody>();
-
-                    foreach (var child in children)
-                        child.AddForceAtPosition((this.transform.up - collision.transform.position).normalized * 10.0f, collision.transform.position, ForceMode.Impulse);
-
-                    children.First().OnDestroyAsObservable().Subscribe(_ => Destroy(this.gameObject)).AddTo(this);
-                });
+            destroyableCollider.OnTriggerEnterAsObservable()
+            .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
+            .Subscribe(collider =>
+            {
+                TriggerEnter(collider);
+            });
         }
 
-        private void StartFleeingHumans()
+        protected virtual void TriggerEnter(Collider collider)
         {
-            foreach (var human in humans) human.gameObject.SetActive(true);
+            if (destroyed != null) destroyed(this.EarthlingCount);
+
+            this.ShowPoints();
+
+            StartCoroutine(PlayDestructionSounds());
+
+            destroyableCollider.gameObject.SetActive(false);
+            destructionFx.SetActive(true);
         }
 
-        private void PlayDestructionSounds()
+        private IEnumerator PlayDestructionSounds()
         {
             foreach (var sound in this.destructionSounds)
             {
+                yield return new WaitForSeconds(UnityEngine.Random.Range(0, 0.3f));
                 var audioSource = gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
                 audioSource.clip = sound;
-                audioSource.volume = 1f;
+                audioSource.volume = 0.1f;
                 audioSource.Play();
             }
         }
 
         private void ShowPoints()
         {
-            if (humanCount > 0)
-            {
-                pointsMesh.transform.position = pointsMesh.transform.position * 1.1f;
-                pointsMesh.gameObject.SetActive(true);
-                hudScore.RemainingHumans -= humanCount;
-            }
+            pointsMesh.transform.position = pointsMesh.transform.position * 1.1f;
+            pointsMesh.gameObject.SetActive(true);
         }
     }
 }

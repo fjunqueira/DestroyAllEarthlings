@@ -12,6 +12,14 @@ namespace DestroyAllEarthlings
         [SerializeField]
         private PlanetNavMesh navMesh;
 
+        public Vector3 BlockingNodePosition
+        {
+            get
+            {
+                return this.blockingNodePosition;
+            }
+        }
+
         public PlanetNode GetNode()
         {
             return navMesh.GetNodeByPosition(blockingNodePosition) as PlanetNode;
