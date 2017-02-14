@@ -9,8 +9,10 @@ namespace DestroyAllEarthlings
 {
     public class Laser : MonoBehaviour
     {
-        //[SerializeField]
-        //private ProgressBarBehaviour shipEnergy;
+        public delegate void LaserEnergyChangedHandler(float energy);
+
+        public static event LaserEnergyChangedHandler laserEnergyChanged;
+
         private float laserEnergy;
 
         [SerializeField]
@@ -92,6 +94,7 @@ namespace DestroyAllEarthlings
             }
 
             this.laserEnergy += IsActive ? -1 : 1;
+            if (laserEnergyChanged != null) laserEnergyChanged(this.laserEnergy);
         }
 
         private IEnumerator LaserChargeWait()

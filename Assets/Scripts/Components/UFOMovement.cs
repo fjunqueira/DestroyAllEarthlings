@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DestroyAllEarthlings
 {
-    public class UFO : MonoBehaviour
+    public class UFOMovement : MonoBehaviour
     {
         private bool reverseInput = false;
 

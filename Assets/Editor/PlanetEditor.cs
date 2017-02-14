@@ -77,7 +77,7 @@ namespace DestroyAllEarthlings.EditorExtensions
                                 .SetValue(gravityBody, planet.GetComponent<GravityAttractor>());
                          }
 
-                         var pathfindingObstacle = obj.GetComponent<PathfindingObstacle>();
+                         var pathfindingObstacle = obj.GetComponent<NavMeshElement>();
 
                          if (pathfindingObstacle != null)
                          {
