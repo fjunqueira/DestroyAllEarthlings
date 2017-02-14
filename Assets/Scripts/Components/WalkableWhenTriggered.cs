@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace DestroyAllEarthlings
 {
+    [RequireComponent(typeof(Collider))]
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(NavMeshElement))]
     public class WalkableWhenTriggered : MonoBehaviour
     {
-        [SerializeField]
-        private NavMeshElement obstacle;
-
         [SerializeField]
         private Collider obstacleCollider;
 
@@ -20,10 +20,10 @@ namespace DestroyAllEarthlings
         private void Start()
         {
             obstacleCollider
-				.OnTriggerEnterAsObservable()
-				.Where(collider => collider.transform.name == triggerName)
-				.Subscribe(collider => obstacle.IsWalkable = true)
-				.AddTo(this);
+                .OnTriggerEnterAsObservable()
+                .Where(collider => collider.transform.name == triggerName)
+                .Subscribe(collider => this.GetComponent<NavMeshElement>().IsWalkable = true)
+                .AddTo(this);
         }
     }
 }

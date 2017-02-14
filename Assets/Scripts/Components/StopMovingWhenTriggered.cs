@@ -6,11 +6,11 @@ using UniRx;
 
 namespace DestroyAllEarthlings
 {
+    [RequireComponent(typeof(Collider))]
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(PathFollower))]
     public class StopMovingWhenTriggered : MonoBehaviour
     {
-        [SerializeField]
-        private PathFollower follower;
-
         [SerializeField]
         private Collider followerCollider;
 
@@ -22,7 +22,7 @@ namespace DestroyAllEarthlings
             followerCollider
                 .OnTriggerEnterAsObservable()
                 .Where(collider => collider.transform.name == triggerName)
-                .Subscribe(collider => follower.KeepMoving = false)
+                .Subscribe(collider => this.GetComponent<PathFollower>().KeepMoving = false)
                 .AddTo(this);
         }
     }

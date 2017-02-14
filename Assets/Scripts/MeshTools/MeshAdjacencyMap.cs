@@ -15,12 +15,6 @@ namespace DestroyAllEarthlings
         {
             var triangles = normalizedMesh.Triangles.SelectMany(triangleList => triangleList).ChunksOf(3).ToList();
 
-            // this.adjacencyMap = triangles.Select(triangle => new KeyValuePair<Triangle, Triangle[]>(
-            //     new Triangle(IndexToVertex(triangle, normalizedMesh)),
-            //     triangles.Where(otherTriangle => HasCommonVertices(otherTriangle, triangle))
-            //     .Select(otherTriangle =>
-            //         new Triangle(IndexToVertex(otherTriangle, normalizedMesh))).ToArray())).ToDictionary();
-
             this.adjacencyMap = triangles.Select(triangle => new KeyValuePair<Triangle, Triangle[]>(
                 new Triangle(normalizedMesh.IndexToVertex(triangle)),
                 triangles.Where(otherTriangle => HasCommonVertices(otherTriangle, triangle))

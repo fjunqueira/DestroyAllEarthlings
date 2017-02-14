@@ -27,6 +27,9 @@ namespace DestroyAllEarthlings
         [SerializeField]
         protected GameObject destructionFx;
 
+        [SerializeField]
+        protected string triggerName = "Orbital_Laser_Hit";
+
         public virtual int EarthlingCount { get { return this.earthlingCount; } }
 
         private void Start()
@@ -34,11 +37,9 @@ namespace DestroyAllEarthlings
             pointsMesh.text = earthlingCount.ToString();
 
             destroyableCollider.OnTriggerEnterAsObservable()
-                .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
-                .Subscribe(collider =>
-                {
-                    TriggerEnter(collider);
-                }).AddTo(this);
+                .Where(collider => collider.transform.name == triggerName)
+                .Subscribe(collider => TriggerEnter(collider))
+                .AddTo(this);
         }
 
         protected virtual void TriggerEnter(Collider collider)
