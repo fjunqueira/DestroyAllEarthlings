@@ -13,84 +13,47 @@ namespace DestroyAllEarthlings
         [SerializeField]
         private PlanetNavMesh navMesh;
 
-
         [SerializeField]
         private Vector3 startingNodePosition;
 
         [SerializeField]
-        private Collider humanCollider;
+        private bool keepMoving = true;
 
-        public Vector3 StartingNodePosition
+        public bool KeepMoving
         {
-            get { return this.startingNodePosition; }
-            set { this.startingNodePosition = value; }
+            get { return this.keepMoving; }
+            set { this.keepMoving = value; }
         }
 
         public void Start()
         {
-            //navMesh.GetNodeByPosition(startingNodePosition).IsWalkable = true;
-
-            var arrived = false;
-
-            humanCollider.OnTriggerEnterAsObservable()
-            .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
-            .Subscribe(collider =>
-            {
-                arrived = true;
-
-            }).AddTo(this);
-            
             var path = navMesh.FindPath(navMesh.GetNodeByPosition(startingNodePosition)).ToList();
 
-            if (!path.Any())
+            if (!path.Any() || path.Count == 1)
             {
-                Debug.Log("No where to run No where to hide No where to go!");
+                Debug.Log("Could happen, but shouldn't");
                 return;
             }
 
-            if (path.Count == 1)
-            {
-                Debug.Log("Already at destination");
-                return;
-            }
-
-            var current = (path.Shift() as PlanetNode);
-            var target = (path.Shift() as PlanetNode);
-
-            var currentPosition = current.Position;
-            var nextPosition = GetNextPosition(current, target);
-
-            var interpolation = 0.0f;
+            var navigation = new CurrentNavigation(path);
 
             Observable.EveryUpdate().Subscribe(_ =>
-            {
-                if (arrived) return;
-
-                interpolation += Mathf.Clamp(Time.deltaTime, 0, 1);
-
-                transform.position = Vector3.Lerp(currentPosition, nextPosition, interpolation) * 1.01f;
-
-                transform.LookAt(nextPosition * 1.01f, current.Triangle.FaceNormal);
-
-                if (interpolation >= 1.0f)
                 {
-                    if (!path.Any())
-                    {
-                        arrived = true;
-                    }
-                    else
-                    {
-                        interpolation = 0;
-                        current = target;
-                        target = path.Shift() as PlanetNode;
-                        currentPosition = nextPosition;
-                        nextPosition = path.Any() ? GetNextPosition(current, target) : target.Position;
-                    }
-                }
-            }).AddTo(this);
+                    if (!KeepMoving) return;
+
+                    navigation.Interpolation += Mathf.Clamp(Time.deltaTime, 0, 1);
+
+                    transform.position = Vector3.Lerp(navigation.CurrentPosition, navigation.NextPosition, navigation.Interpolation) * 1.01f;
+
+                    transform.LookAt(navigation.NextPosition * 1.01f, navigation.Current.Triangle.FaceNormal);
+
+                    if (navigation.ReachedWayPoint)
+                        if (navigation.Arrived) KeepMoving = false; else navigation.MoveNext();
+
+                }).AddTo(this);
         }
 
-        private Vector3 GetNextPosition(PlanetNode current, PlanetNode target)
+        public static Vector3 GetNextPosition(PlanetNode current, PlanetNode target)
         {
             if (current.Triangle.A == target.Triangle.A)
                 return target.Triangle.A;
@@ -113,8 +76,40 @@ namespace DestroyAllEarthlings
             else
             {
                 Debug.Log("Something went wrong: Human.GetNextPosition");
-                Destroy(this.gameObject);
                 return Vector3.zero;
+            }
+        }
+
+        private class CurrentNavigation
+        {
+            public CurrentNavigation(List<PathfindingNode> path)
+            {
+                Path = path;
+                Current = path.Shift() as PlanetNode;
+                Target = path.Shift() as PlanetNode;
+                CurrentPosition = Current.Position;
+                NextPosition = GetNextPosition(Current, Target);
+                Interpolation = 0.0f;
+            }
+
+            public List<PathfindingNode> Path { get; set; }
+            public PlanetNode Current { get; set; }
+            public PlanetNode Target { get; set; }
+            public Vector3 CurrentPosition { get; set; }
+            public Vector3 NextPosition { get; set; }
+            public float Interpolation { get; set; }
+
+            public bool ReachedWayPoint { get { return Interpolation >= 1.0f; } }
+
+            public bool Arrived { get { return !Path.Any(); } }
+
+            public void MoveNext()
+            {
+                Interpolation = 0;
+                Current = Target;
+                Target = Path.Shift() as PlanetNode;
+                CurrentPosition = NextPosition;
+                NextPosition = Path.Any() ? GetNextPosition(Current, Target) : Target.Position;
             }
         }
     }
