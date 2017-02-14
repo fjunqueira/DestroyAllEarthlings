@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UniRx.Triggers;
+using UniRx;
 using UnityEngine;
 
 namespace DestroyAllEarthlings
@@ -12,24 +14,35 @@ namespace DestroyAllEarthlings
         [SerializeField]
         private PlanetNavMesh navMesh;
 
+        [SerializeField]
+        private Collider obstacleCollider;
+
+        [SerializeField]
+        private bool walkable = false;
+
+        public void Start()
+        {
+            navMesh.GetNodeByPosition(blockingNodePosition).IsWalkable = walkable;
+
+            obstacleCollider.OnTriggerEnterAsObservable()
+            .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
+            .Subscribe(collider =>
+            {
+                navMesh.GetNodeByPosition(blockingNodePosition).IsWalkable = true;
+            }).AddTo(this);
+        }
+
         public Vector3 BlockingNodePosition
         {
             get
             {
-                return this.blockingNodePosition;
+                return blockingNodePosition;
             }
         }
 
         public PlanetNode GetNode()
         {
             return navMesh.GetNodeByPosition(blockingNodePosition) as PlanetNode;
-        }
-
-        private void OnDestroy()
-        {
-            Debug.Log("Calling on destroy");
-            if (navMesh != null)
-                navMesh.GetNodeByPosition(blockingNodePosition).IsWalkable = true;
         }
     }
 }

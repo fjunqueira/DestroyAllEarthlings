@@ -81,6 +81,8 @@ namespace DestroyAllEarthlings.EditorExtensions
 
                          if (pathfindingObstacle != null)
                          {
+                             var planetNavMesh = planet.GetComponent<PlanetNavMesh>();
+
                              pathfindingObstacle
                                 .GetType()
                                 .GetField("blockingNodePosition", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -89,7 +91,20 @@ namespace DestroyAllEarthlings.EditorExtensions
                              pathfindingObstacle
                                 .GetType()
                                 .GetField("navMesh", BindingFlags.Instance | BindingFlags.NonPublic)
-                                .SetValue(pathfindingObstacle, planet.GetComponent<PlanetNavMesh>());
+                                .SetValue(pathfindingObstacle, planetNavMesh);
+
+                             foreach (var follower in pathfindingObstacle.GetComponentsInChildren<PathFollower>(true))
+                             {
+                                 follower
+                                     .GetType()
+                                     .GetField("navMesh", BindingFlags.Instance | BindingFlags.NonPublic)
+                                     .SetValue(follower, planetNavMesh);
+
+                                 follower
+                                    .GetType()
+                                    .GetField("startingNodePosition", BindingFlags.Instance | BindingFlags.NonPublic)
+                                    .SetValue(follower, triangle.Centroid);
+                             }
                          }
                      }
                  });

@@ -17,14 +17,29 @@ namespace DestroyAllEarthlings
         [SerializeField]
         private Vector3 startingNodePosition;
 
+        [SerializeField]
+        private Collider humanCollider;
+
         public Vector3 StartingNodePosition
         {
             get { return this.startingNodePosition; }
             set { this.startingNodePosition = value; }
         }
 
-        private void Start()
+        public void Start()
         {
+            //navMesh.GetNodeByPosition(startingNodePosition).IsWalkable = true;
+
+            var arrived = false;
+
+            humanCollider.OnTriggerEnterAsObservable()
+            .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
+            .Subscribe(collider =>
+            {
+                arrived = true;
+
+            }).AddTo(this);
+            
             var path = navMesh.FindPath(navMesh.GetNodeByPosition(startingNodePosition)).ToList();
 
             if (!path.Any())
@@ -38,8 +53,6 @@ namespace DestroyAllEarthlings
                 Debug.Log("Already at destination");
                 return;
             }
-
-            var arrived = false;
 
             var current = (path.Shift() as PlanetNode);
             var target = (path.Shift() as PlanetNode);

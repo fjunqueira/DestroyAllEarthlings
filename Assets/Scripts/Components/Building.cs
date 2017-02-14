@@ -12,14 +12,16 @@ namespace DestroyAllEarthlings
         [SerializeField]
         private List<PathFollower> humans;
 
+        [SerializeField]
+        private List<AudioClip> destructionSounds;
+
         public override int EarthlingCount { get { return base.EarthlingCount + humans.Count; } }
 
         protected override void TriggerEnter(Collider collider)
         {
-            var pathfindingObstacle = gameObject.GetComponent<PathfindingObstacle>();
-            foreach (var human in humans) human.StartingNodePosition = pathfindingObstacle.BlockingNodePosition;
-
             base.TriggerEnter(collider);
+
+            StartCoroutine(PlayDestructionSounds());
 
             StartCoroutine(StartFleeingHumans());
 
@@ -37,6 +39,19 @@ namespace DestroyAllEarthlings
             {
                 yield return new WaitForSeconds(Random.Range(0, 0.5f));
                 human.gameObject.SetActive(true);
+                human.transform.parent = null;
+            }
+        }
+
+        private IEnumerator PlayDestructionSounds()
+        {
+            foreach (var sound in this.destructionSounds)
+            {
+                yield return new WaitForSeconds(UnityEngine.Random.Range(0, 0.3f));
+                var audioSource = gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
+                audioSource.clip = sound;
+                audioSource.volume = 0.1f;
+                audioSource.Play();
             }
         }
     }

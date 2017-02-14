@@ -22,13 +22,10 @@ namespace DestroyAllEarthlings
         protected TextMesh pointsMesh;
 
         [SerializeField]
-        private Collider destroyableCollider;
+        protected Collider destroyableCollider;
 
         [SerializeField]
         protected GameObject destructionFx;
-
-        [SerializeField]
-        private List<AudioClip> destructionSounds;
 
         public virtual int EarthlingCount { get { return this.earthlingCount; } }
 
@@ -37,11 +34,11 @@ namespace DestroyAllEarthlings
             pointsMesh.text = earthlingCount.ToString();
 
             destroyableCollider.OnTriggerEnterAsObservable()
-            .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
-            .Subscribe(collider =>
-            {
-                TriggerEnter(collider);
-            });
+                .Where(collider => collider.transform.name == "Orbital_Laser_Hit")
+                .Subscribe(collider =>
+                {
+                    TriggerEnter(collider);
+                }).AddTo(this);
         }
 
         protected virtual void TriggerEnter(Collider collider)
@@ -50,22 +47,8 @@ namespace DestroyAllEarthlings
 
             this.ShowPoints();
 
-            StartCoroutine(PlayDestructionSounds());
-
             destroyableCollider.gameObject.SetActive(false);
             destructionFx.SetActive(true);
-        }
-
-        private IEnumerator PlayDestructionSounds()
-        {
-            foreach (var sound in this.destructionSounds)
-            {
-                yield return new WaitForSeconds(UnityEngine.Random.Range(0, 0.3f));
-                var audioSource = gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
-                audioSource.clip = sound;
-                audioSource.volume = 0.1f;
-                audioSource.Play();
-            }
         }
 
         private void ShowPoints()
