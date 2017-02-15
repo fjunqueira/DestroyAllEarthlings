@@ -55,7 +55,7 @@ namespace DestroyAllEarthlings
             var nodeWithLowestCostOnHeap = StepAlgorithm(binaryHeapOpenList, grid, currentNode, destinationNode,
                 (current, destination) => grid.GetHeuristic(current, destination));
 
-            return RunAStar(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap, destinationNode);
+            return nodeWithLowestCostOnHeap == null ? null : RunAStar(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap, destinationNode);
         }
 
         private static TNode RunDijkstra<TNode>(BinaryHeap<TNode> binaryHeapOpenList, IPathfindingGrid<TNode> grid, TNode currentNode) where TNode : PathfindingNode
@@ -64,7 +64,7 @@ namespace DestroyAllEarthlings
 
             var nodeWithLowestCostOnHeap = StepAlgorithm(binaryHeapOpenList, grid, currentNode, null, (current, destination) => 0);
 
-            return RunDijkstra(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap);
+            return nodeWithLowestCostOnHeap == null ? null : RunDijkstra(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap);
         }
 
         private static TNode StepAlgorithm<TNode>(

@@ -14,9 +14,8 @@ namespace DestroyAllEarthlings
         {
             if (collider.transform.name == "Human")
             {
-                Destroy(collider.gameObject);
+                Destroy(collider.transform.parent.gameObject);
                 if (escaped != null) escaped();
-                Debug.Log("A human just escaped");
             }
         }
     }

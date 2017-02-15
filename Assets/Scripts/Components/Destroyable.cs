@@ -44,7 +44,7 @@ namespace DestroyAllEarthlings
 
         protected virtual void TriggerEnter(Collider collider)
         {
-            if (destroyed != null) destroyed(this.EarthlingCount);
+            if (destroyed != null) destroyed(this.earthlingCount);
 
             this.ShowPoints();
 

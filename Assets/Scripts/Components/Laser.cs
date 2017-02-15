@@ -93,7 +93,7 @@ namespace DestroyAllEarthlings
                 laserChargeBeam.SetActive(IsCharging = false);
             }
 
-            this.laserEnergy += IsActive ? -1 : 1;
+            this.laserEnergy = Mathf.Clamp(this.laserEnergy + (IsActive ? -1 : 1), 0, 100);
             if (laserEnergyChanged != null) laserEnergyChanged(this.laserEnergy);
         }
 
