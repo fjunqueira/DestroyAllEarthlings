@@ -2,9 +2,9 @@
 
 namespace DestroyAllEarthlings
 {
-    public sealed class PathfindingNodeComparator : IComparer<PathfindingNode>
+    public sealed class PathfindingNodeComparator<TNode> : IComparer<TNode> where TNode : PathfindingNode
     {
-        public int Compare(PathfindingNode n1, PathfindingNode n2)
+        public int Compare(TNode n1, TNode n2)
         {
             if (n1 == n2)
             {

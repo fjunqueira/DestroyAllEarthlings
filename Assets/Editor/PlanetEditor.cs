@@ -70,44 +70,37 @@ namespace DestroyAllEarthlings.EditorExtensions
                          obj.transform.parent = planet.transform;
 
                          foreach (var gravityBody in obj.GetComponentsInChildren<GravityBody>(true))
-                         {
-                             gravityBody
-                                .GetType()
-                                .GetField("attractor", BindingFlags.Instance | BindingFlags.NonPublic)
-                                .SetValue(gravityBody, planet.GetComponent<GravityAttractor>());
-                         }
+                             SetNonPublicMember(gravityBody, planet.GetComponent<GravityAttractor>(), "attractor");
 
                          var pathfindingObstacle = obj.GetComponent<NavMeshElement>();
 
-                         if (pathfindingObstacle != null)
-                         {
-                             var planetNavMesh = planet.GetComponent<PlanetNavMesh>();
-
-                             pathfindingObstacle
-                                .GetType()
-                                .GetField("blockingNodePosition", BindingFlags.Instance | BindingFlags.NonPublic)
-                                .SetValue(pathfindingObstacle, triangle.Centroid);
-
-                             pathfindingObstacle
-                                .GetType()
-                                .GetField("navMesh", BindingFlags.Instance | BindingFlags.NonPublic)
-                                .SetValue(pathfindingObstacle, planetNavMesh);
-
-                             foreach (var follower in pathfindingObstacle.GetComponentsInChildren<PathFollower>(true))
-                             {
-                                 follower
-                                     .GetType()
-                                     .GetField("navMesh", BindingFlags.Instance | BindingFlags.NonPublic)
-                                     .SetValue(follower, planetNavMesh);
-
-                                 follower
-                                    .GetType()
-                                    .GetField("startingNodePosition", BindingFlags.Instance | BindingFlags.NonPublic)
-                                    .SetValue(follower, triangle.Centroid);
-                             }
-                         }
+                         SetNavMeshInfo(pathfindingObstacle, triangle);
                      }
                  });
+        }
+
+        private static void SetNavMeshInfo(NavMeshElement pathfindingObstacle, Triangle triangle)
+        {
+            if (pathfindingObstacle != null)
+            {
+                var planetNavMesh = planet.GetComponent<PlanetNavMesh>();
+
+                SetNonPublicMember(pathfindingObstacle, triangle.Centroid, "blockingNodePosition");
+                SetNonPublicMember(pathfindingObstacle, planetNavMesh, "navMesh");
+
+                foreach (var follower in pathfindingObstacle.GetComponentsInChildren<PathFollower>(true))
+                {
+                    SetNonPublicMember(follower, planetNavMesh, "navMesh");
+                    SetNonPublicMember(follower, triangle.Centroid, "startingNodePosition");
+                }
+            }
+        }
+
+        private static void SetNonPublicMember<T1, T2>(T1 obj, T2 value, string field)
+        {
+            obj.GetType()
+               .GetField(field, BindingFlags.Instance | BindingFlags.NonPublic)
+               .SetValue(obj, value);
         }
 
         public void OnEnable()

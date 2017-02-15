@@ -82,7 +82,7 @@ namespace DestroyAllEarthlings.Tests
             var startingNode = grid.AdjacencyIndexing.ElementAt(0).Key;
             var endingNode = grid.AdjacencyIndexing.ElementAt(100).Key;
 
-            var path = grid.FindPath(startingNode, endingNode);
+            var path = grid.RunAStar(startingNode, endingNode);
 
             Assert.IsNotNull(path);
             Assert.IsNotEmpty(path);
@@ -99,7 +99,7 @@ namespace DestroyAllEarthlings.Tests
             var startingNode = grid.AdjacencyIndexing.ElementAt(0).Key;
             var endingNode = grid.AdjacencyIndexing.ElementAt(100).Key;
 
-            var path = grid.FindPath(startingNode, endingNode);
+            var path = grid.RunAStar(startingNode, endingNode);
 
             Assert.AreEqual(startingNode, path.First(), "The first node in the path should be the starting node");
             Assert.AreEqual(endingNode, path.Last(), "The last node in the path should be the ending node");

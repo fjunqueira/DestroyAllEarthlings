@@ -5,125 +5,82 @@ namespace DestroyAllEarthlings
 {
     public static class PathfindingGrid
     {
-        private static PathfindingNodeComparator comparator = new PathfindingNodeComparator();
-
-        public static PathfindingNode[] FindPath<TNode>(this IPathfindingGrid<TNode> grid, PathfindingNode startingNode, PathfindingNode destinationNode) where TNode : PathfindingNode
+        public static TNode[] RunAStar<TNode>(this IPathfindingGrid<TNode> grid, TNode startingNode, TNode destinationNode) where TNode : PathfindingNode
         {
-            return FindPath(grid, startingNode, destinationNode, grid.Size);
+            grid.InitializeExecution(startingNode);
+
+            var binaryHeapOpenList = new BinaryHeap<TNode>(grid.Size, new PathfindingNodeComparator<TNode>());
+
+            var result = RunAStar(binaryHeapOpenList, grid, startingNode, destinationNode);
+
+            return result.PathAsArray();
         }
 
-        public static PathfindingNode[] FindPath<TNode>(this IPathfindingGrid<TNode> grid, PathfindingNode startingNode, PathfindingNode destinationNode, int maxIterations) where TNode : PathfindingNode
+        public static TNode[] RunDijkstra<TNode>(this IPathfindingGrid<TNode> grid, TNode startingNode) where TNode : PathfindingNode
+        {
+            grid.InitializeExecution(startingNode);
+
+            var binaryHeapOpenList = new BinaryHeap<TNode>(grid.Size, new PathfindingNodeComparator<TNode>());
+
+            var result = RunDijkstra(binaryHeapOpenList, grid, startingNode);
+
+            return result.PathAsArray();
+        }
+
+        private static void InitializeExecution<TNode>(this IPathfindingGrid<TNode> grid, PathfindingNode startingNode) where TNode : PathfindingNode
         {
             grid.RunId = Guid.NewGuid();
 
-            var binaryHeapOpenList = new BinaryHeap<PathfindingNode>(grid.Size, comparator);
-
             startingNode.ResetInfo(grid.RunId);
+        }
 
-            var currentNode = FindNextNode(binaryHeapOpenList, grid, startingNode, destinationNode, maxIterations, 0);
+        private static TNode[] PathAsArray<TNode>(this TNode node) where TNode : PathfindingNode
+        {
+            var orderedPath = new Stack<TNode>();
 
-            var orderedPath = new Stack<PathfindingNode>();
-
-            while (currentNode != null)
+            while (node != null)
             {
-                orderedPath.Push(currentNode);
+                orderedPath.Push(node);
 
-                currentNode = currentNode.ParentNode;
+                node = node.ParentNode as TNode;
             }
 
             return orderedPath.ToArray();
         }
 
-        private static PathfindingNode FindNextNode<TNode>(BinaryHeap<PathfindingNode> binaryHeapOpenList, IPathfindingGrid<TNode> grid, PathfindingNode currentNode, PathfindingNode destinationNode, int maxIterations, int currentIteration) where TNode : PathfindingNode
+        private static TNode RunAStar<TNode>(BinaryHeap<TNode> binaryHeapOpenList, IPathfindingGrid<TNode> grid, TNode currentNode, TNode destinationNode) where TNode : PathfindingNode
         {
-            if (destinationNode.WasVisited && destinationNode.RunId == grid.RunId)
-            {
-                return destinationNode;
-            }
+            if (destinationNode.WasVisited && destinationNode.RunId == grid.RunId) return destinationNode;
 
-            currentNode.WasVisited = true;
+            var nodeWithLowestCostOnHeap = StepAlgorithm(binaryHeapOpenList, grid, currentNode, destinationNode,
+                (current, destination) => grid.GetHeuristic(current, destination));
 
-            var adjacentNodes = currentNode.GetAdjacentNodes();
-
-            for (int i = 0; i < adjacentNodes.Length; i++)
-            {
-                var adjacentNode = adjacentNodes[i];
-
-                if (adjacentNode != null && adjacentNode.IsWalkable && (!adjacentNode.WasVisited || adjacentNode.RunId != grid.RunId))
-                {
-                    if (!adjacentNode.IsOnOpenList || adjacentNode.RunId != grid.RunId)
-                    {
-                        adjacentNode.RunId = grid.RunId;
-                        adjacentNode.ParentNode = currentNode;
-
-                        adjacentNode.G = currentNode.G + grid.GetPartialPathCost((TNode)currentNode, (TNode)adjacentNode);
-
-                        adjacentNode.H = grid.GetHeuristic((TNode)adjacentNode, (TNode)destinationNode);
-
-                        binaryHeapOpenList.Push(adjacentNode);
-                        adjacentNode.IsOnOpenList = true;
-                    }
-                    else if (adjacentNode.IsOnOpenList && adjacentNode.RunId == grid.RunId)
-                    {
-                        var g = currentNode.G + grid.GetPartialPathCost((TNode)currentNode, (TNode)adjacentNode);
-
-                        if (g < adjacentNode.G)
-                        {
-                            binaryHeapOpenList.Remove(adjacentNode);
-
-                            adjacentNode.ParentNode = currentNode;
-                            adjacentNode.G = g;
-
-                            binaryHeapOpenList.Push(adjacentNode);
-                        }
-                    }
-                }
-            }
-
-            if (binaryHeapOpenList.IsEmpty || currentIteration + 1 > maxIterations)
-            {
-                return null;
-            }
-
-            var nodeWithLowestCostOnHeap = binaryHeapOpenList.Pop();
-            nodeWithLowestCostOnHeap.IsOnOpenList = false;
-
-            return FindNextNode(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap, destinationNode, maxIterations, ++currentIteration);
+            return RunAStar(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap, destinationNode);
         }
 
-        public static PathfindingNode[] RunDijkstra<TNode>(this IPathfindingGrid<TNode> grid, PathfindingNode startingNode) where TNode : PathfindingNode
+        private static TNode RunDijkstra<TNode>(BinaryHeap<TNode> binaryHeapOpenList, IPathfindingGrid<TNode> grid, TNode currentNode) where TNode : PathfindingNode
         {
-            grid.RunId = Guid.NewGuid();
-
-            var binaryHeapOpenList = new BinaryHeap<PathfindingNode>(grid.Size, comparator);
-
-            startingNode.ResetInfo(grid.RunId);
-
-            var currentNode = RunDijkstra(binaryHeapOpenList, grid, startingNode, grid.Size, 0);
-
-            var orderedPath = new Stack<PathfindingNode>();
-
-            while (currentNode != null)
-            {
-                orderedPath.Push(currentNode);
-
-                currentNode = currentNode.ParentNode;
-            }
-
-            return orderedPath.ToArray();
-        }
-
-        private static PathfindingNode RunDijkstra<TNode>(BinaryHeap<PathfindingNode> binaryHeapOpenList, IPathfindingGrid<TNode> grid, PathfindingNode currentNode, int maxIterations, int currentIteration) where TNode : PathfindingNode
-        {
-            currentNode.WasVisited = true;
-
             if (currentNode.IsDestination) return currentNode;
 
+            var nodeWithLowestCostOnHeap = StepAlgorithm(binaryHeapOpenList, grid, currentNode, null, (current, destination) => 0);
+
+            return RunDijkstra(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap);
+        }
+
+        private static TNode StepAlgorithm<TNode>(
+            BinaryHeap<TNode> binaryHeapOpenList,
+            IPathfindingGrid<TNode> grid,
+            TNode currentNode,
+            TNode destinationNode,
+            Func<TNode, TNode, float> heuristic) where TNode : PathfindingNode
+        {
+            currentNode.WasVisited = true;
+
             var adjacentNodes = currentNode.GetAdjacentNodes();
 
             for (int i = 0; i < adjacentNodes.Length; i++)
             {
-                var adjacentNode = adjacentNodes[i];
+                var adjacentNode = adjacentNodes[i] as TNode;
 
                 if (adjacentNode != null && adjacentNode.IsWalkable && (!adjacentNode.WasVisited || adjacentNode.RunId != grid.RunId))
                 {
@@ -132,16 +89,16 @@ namespace DestroyAllEarthlings
                         adjacentNode.RunId = grid.RunId;
                         adjacentNode.ParentNode = currentNode;
 
-                        adjacentNode.G = currentNode.G + grid.GetPartialPathCost((TNode)currentNode, (TNode)adjacentNode);
+                        adjacentNode.G = currentNode.G + grid.GetPartialPathCost(currentNode, (TNode)adjacentNode);
 
-                        adjacentNode.H = 0;
+                        adjacentNode.H = heuristic(adjacentNode, destinationNode);
 
                         binaryHeapOpenList.Push(adjacentNode);
                         adjacentNode.IsOnOpenList = true;
                     }
                     else if (adjacentNode.IsOnOpenList && adjacentNode.RunId == grid.RunId)
                     {
-                        var g = currentNode.G + grid.GetPartialPathCost((TNode)currentNode, (TNode)adjacentNode);
+                        var g = currentNode.G + grid.GetPartialPathCost(currentNode, (TNode)adjacentNode);
 
                         if (g < adjacentNode.G)
                         {
@@ -156,15 +113,12 @@ namespace DestroyAllEarthlings
                 }
             }
 
-            if (binaryHeapOpenList.IsEmpty || currentIteration + 1 > maxIterations)
-            {
-                return null;
-            }
+            if (binaryHeapOpenList.IsEmpty) return null;
 
             var nodeWithLowestCostOnHeap = binaryHeapOpenList.Pop();
             nodeWithLowestCostOnHeap.IsOnOpenList = false;
 
-            return RunDijkstra(binaryHeapOpenList, grid, nodeWithLowestCostOnHeap, maxIterations, ++currentIteration);
+            return nodeWithLowestCostOnHeap;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace DestroyAllEarthlings
 
         public PathfindingNode[] FindPath(PathfindingNode startingNode)
         {
-            return this.grid.RunDijkstra(startingNode);
+            return this.grid.RunDijkstra(startingNode as PlanetNode);
         }
 
         public PathfindingNode GetNodeByPosition(Vector3 position)
