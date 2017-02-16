@@ -19,6 +19,9 @@ namespace DestroyAllEarthlings
         [SerializeField]
         private bool keepMoving = true;
 
+        [SerializeField]
+        private float speed = 10.0f;
+
         public bool KeepMoving
         {
             get { return this.keepMoving; }
@@ -41,7 +44,9 @@ namespace DestroyAllEarthlings
                 {
                     if (!KeepMoving) return;
 
-                    navigation.Interpolation += Mathf.Clamp(Time.deltaTime, 0, 1);
+                    var distance = Vector3.Distance(navigation.CurrentPosition, navigation.NextPosition);
+
+                    navigation.Interpolation += Mathf.Clamp((Time.deltaTime / distance * speed), 0, 1);
 
                     transform.position = Vector3.Lerp(navigation.CurrentPosition, navigation.NextPosition, navigation.Interpolation) * 1.01f;
 

@@ -12,7 +12,7 @@ namespace DestroyAllEarthlings
 
         private void OnTriggerEnter(Collider collider)
         {
-            if (collider.transform.name == "Human")
+            if (collider.transform.parent != null && collider.transform.parent.GetComponent<Human>() != null)
             {
                 Destroy(collider.transform.parent.gameObject);
                 if (escaped != null) escaped();

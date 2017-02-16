@@ -13,7 +13,7 @@ namespace DestroyAllEarthlings
             Current = path.Shift() as PlanetNode;
             Target = path.Shift() as PlanetNode;
             CurrentPosition = initialPosition;
-            NextPosition = GetNextPosition(Current, Target);
+            NextPosition = GetNextPosition(CurrentPosition, Target);
             Interpolation = 0.0f;
         }
 
@@ -34,24 +34,23 @@ namespace DestroyAllEarthlings
             Current = Target;
             Target = Path.Shift() as PlanetNode;
             CurrentPosition = NextPosition;
-            NextPosition = Path.Any() ? GetNextPosition(Current, Target) : Target.Position;
+            NextPosition = Path.Any() ? GetNextPosition(CurrentPosition, Target) : Target.Position;
         }
 
-        private static Vector3 GetNextPosition(PlanetNode current, PlanetNode target)
+        private static Vector3 GetNextPosition(Vector3 currentPosition, PlanetNode target)
         {
             var possibleWaypoints = new List<Vector3>();
 
-            if (current.Triangle.Vertices.Contains(target.Triangle.A))
-                possibleWaypoints.Add(target.Triangle.A);
-            else if (current.Triangle.Vertices.Contains(target.Triangle.B))
-                possibleWaypoints.Add(target.Triangle.B);
-            else if (current.Triangle.Vertices.Contains(target.Triangle.C))
-                possibleWaypoints.Add(target.Triangle.C);
+            currentPosition = currentPosition.RoundTo(3);
+
+            if (currentPosition == target.Triangle.A.RoundTo(3))
+                possibleWaypoints.AddRange(new Vector3[] { target.Triangle.B, target.Triangle.C });
+            else if (currentPosition == target.Triangle.B.RoundTo(3))
+                possibleWaypoints.AddRange(new Vector3[] { target.Triangle.A, target.Triangle.C });
+            else if (currentPosition == target.Triangle.C.RoundTo(3))
+                possibleWaypoints.AddRange(new Vector3[] { target.Triangle.A, target.Triangle.B });
             else
-            {
-                Debug.Log("Something went wrong: Human.GetNextPosition");
-                return Vector3.zero;
-            }
+                return target.Triangle.Vertices.OrderByDescending(vertice => Vector3.Distance(currentPosition, vertice)).First();
 
             return possibleWaypoints.ElementAt(UnityEngine.Random.Range(0, possibleWaypoints.Count));
         }
