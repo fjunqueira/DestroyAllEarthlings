@@ -7,12 +7,12 @@ namespace DestroyAllEarthlings
 {
     public class WaypointManager
     {
-        public WaypointManager(List<PathfindingNode> path)
+        public WaypointManager(List<PathfindingNode> path, Vector3 initialPosition)
         {
             Path = path;
             Current = path.Shift() as PlanetNode;
             Target = path.Shift() as PlanetNode;
-            CurrentPosition = Current.Position;
+            CurrentPosition = initialPosition;
             NextPosition = GetNextPosition(Current, Target);
             Interpolation = 0.0f;
         }

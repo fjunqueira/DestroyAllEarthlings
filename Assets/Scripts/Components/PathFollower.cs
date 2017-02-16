@@ -35,7 +35,7 @@ namespace DestroyAllEarthlings
                 return;
             }
 
-            var navigation = new WaypointManager(path);
+            var navigation = new WaypointManager(path, transform.position);
 
             Observable.EveryUpdate().Subscribe(_ =>
                 {
