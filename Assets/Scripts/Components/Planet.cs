@@ -1,15 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UniRx;
-using System;
 
 namespace DestroyAllEarthlings
 {
     public class Planet : MonoBehaviour
     {
-        [SerializeField]
-        private float radius;
-
-        public float Radius { get { return this.radius; } }
     }
 }

@@ -18,7 +18,7 @@ namespace DestroyAllEarthlings.Tests
             var startingNode = grid.GetNodeByIndex(500, 498);
             var endingNode = grid.GetNodeByIndex(500, 502);
 
-            var result = grid.FindPath(startingNode, endingNode);
+            var result = grid.RunAStar(startingNode, endingNode);
 
             var expectedResult = new PathfindingNode[]
             {

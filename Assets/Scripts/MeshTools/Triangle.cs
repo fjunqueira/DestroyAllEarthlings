@@ -26,6 +26,14 @@ namespace DestroyAllEarthlings
             }
         }
 
+        public Vector3 FaceNormal
+        {
+            get
+            {
+                return Vector3.Cross(B - A, C - A);
+            }
+        }
+
         public List<Vector3> Vertices { get; set; }
 
         public Vector3 A { get { return this.Vertices.ElementAt(0); } set { this.Vertices.Insert(0, value); } }

@@ -9,10 +9,10 @@ namespace DestroyAllEarthlings
     public class UFOCamera : MonoBehaviour
     {
         [SerializeField]
-        private UFO ufo;
+        private Transform ufo;
 
         [SerializeField]
-        private UFOHull hull;
+        private Transform ufoHull;
 
         [SerializeField]
         private float turningSpeed = 2f;
@@ -34,7 +34,7 @@ namespace DestroyAllEarthlings
             var nextAngle = Mathf.LerpAngle(0, 180, interpolation) - angle;
 
             transform.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
-            hull.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
+            ufoHull.transform.RotateAround(ufo.transform.position, ufo.transform.up, nextAngle);
             angle += nextAngle;
         }
     }

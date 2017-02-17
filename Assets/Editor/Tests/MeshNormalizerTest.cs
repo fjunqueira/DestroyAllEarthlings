@@ -21,7 +21,7 @@ namespace DestroyAllEarthlings.Tests
             var normalizedMesh = new MeshNormalizer().Normalize(mesh);
 
             Assert.AreEqual(162, normalizedMesh.Vertices.Count(), "A geodesic sphere created by 2 subdivisions must have 642 vertices");
-            Assert.AreEqual(mesh.triangles.Count(), normalizedMesh.Triangles.Count(), "The number of faces should stay the same");
+            Assert.AreEqual(mesh.triangles.Count(), normalizedMesh.Triangles.SelectMany(x => x).Count(), "The number of faces should stay the same");
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace DestroyAllEarthlings.Tests
             var normalizedMesh = new MeshNormalizer().Normalize(mesh);
 
             Assert.AreEqual(642, normalizedMesh.Vertices.Count(), "A geodesic sphere created by 3 subdivisions must have 642 vertices");
-            Assert.AreEqual(mesh.triangles.Count(), normalizedMesh.Triangles.Count(), "The number of faces should stay the same");
+            Assert.AreEqual(mesh.triangles.Count(), normalizedMesh.Triangles.SelectMany(x => x).Count(), "The number of faces should stay the same");
         }
     }
 }

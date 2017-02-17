@@ -27,15 +27,17 @@ namespace DestroyAllEarthlings
             //Creates a new vertex list, with no replicated vertices
             var newVertexList = vertexGroup.Select(x => x.Vertex).ToList();
 
-            //Creates a new triangle list, using the new indexes
-            var newTrianglesList = this.UpdateTriangleList(mesh.triangles, vertexGroup);
+            //Creates a new list of triangles list, each list contains the triangles of a submesh
+            var newTrianglesList =
+                Enumerable.Range(0, mesh.subMeshCount)
+                .Select(subMesh => this.UpdateTriangleList(mesh.GetTriangles(subMesh), vertexGroup)).ToList();
 
             var normalizedMesh = new NormalizedMesh()
             {
-                Vertices = newVertexList.ToArray(),
-                Triangles = newTrianglesList.ToArray()
+                Vertices = newVertexList,
+                Triangles = newTrianglesList
             };
-            //Create tests for this using a geodesic sphere
+
             return normalizedMesh;
         }
 
@@ -58,8 +60,13 @@ namespace DestroyAllEarthlings
 
     public class NormalizedMesh
     {
-        public Vector3[] Vertices { get; set; }
+        public List<Vector3> Vertices { get; set; }
 
-        public int[] Triangles { get; set; }
+        public List<List<int>> Triangles { get; set; }
+
+        public IEnumerable<Vector3> IndexToVertex(IEnumerable<int> indexes)
+        {
+            return indexes.Select(verticeIndex => this.Vertices.ElementAt(verticeIndex));
+        }
     }
 }

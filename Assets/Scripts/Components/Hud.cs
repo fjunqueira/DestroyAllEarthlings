@@ -22,37 +22,61 @@ namespace DestroyAllEarthlings
         private Text hudTimer;
 
         [SerializeField]
+        private Text hudEscapees;
+
+        [SerializeField]
         private Image image;
 
         [SerializeField]
-        private Text victory;
+        private Text allHumans;
 
         [SerializeField]
-        private Text gameOver;
+        private Text mostHumans;
+
+        [SerializeField]
+        private Text timesUp;
+
+        [SerializeField]
+        private Text tooManyEscapees;
 
         [SerializeField]
         private Text pressEnter;
 
         public int RemainingHumans { get; set; }
 
+        public int Escapees { get; set; }
+
         private float interpolation;
 
         private bool blinking = false;
 
+        private int maximumEscapees = 0;
+
+        [SerializeField]
+        private int humanPerEscapee = 5;
+
         private void Start()
         {
+            Destroyable.destroyed += AddPoints;
+
+            Bunker.escaped += AddEscapee;
+
             RemainingHumans = GameObject.FindObjectsOfType<Destroyable>()
-                .Where(x => x.HumanCount > 0)
-                .Select(x => x.HumanCount)
+                .Select(destroyable => destroyable.EarthlingCount)
                 .Sum();
+
+            maximumEscapees = RemainingHumans / humanPerEscapee;
         }
 
         private void Update()
         {
-            bool gameEnded = RemainingHumans <= 0 || gameDuration <= 0;
+            bool gameEnded = RemainingHumans <= 0 || gameDuration <= 0 || Escapees > maximumEscapees || RemainingHumans - Escapees == 0;
 
             if (gameEnded)
             {
+                Destroyable.destroyed -= AddPoints;
+                Bunker.escaped -= AddEscapee;
+
                 interpolation = Mathf.Clamp(interpolation + Time.deltaTime, 0, 1);
                 this.image.material.SetFloat("_Size", Mathf.Lerp(0, 2f, interpolation));
 
@@ -61,13 +85,16 @@ namespace DestroyAllEarthlings
                 if (Input.GetKeyUp(KeyCode.Return))
                 {
                     ClearScreen();
-                    SceneManager.LoadScene(0);
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 }
             }
 
-            if (RemainingHumans > 0)
-                hudTimer.text = string.Format("Time: {0}", Mathf.Round(Mathf.Clamp(gameDuration -= Time.deltaTime, 0, gameDuration)));
+            if (!gameEnded)
+                gameDuration -= Time.deltaTime;
+
+            hudTimer.text = string.Format("Time: {0}", Mathf.Round(Mathf.Clamp(gameDuration, 0, gameDuration)));
             hudScore.text = string.Format("Remaining Humans: {0}", RemainingHumans);
+            hudEscapees.text = string.Format("Escapees: {0}", Escapees);
         }
 
         private IEnumerator BlinkText()
@@ -76,7 +103,7 @@ namespace DestroyAllEarthlings
 
             while (true)
             {
-                var endText = gameDuration <= 0 ? gameOver : victory;
+                var endText = gameDuration <= 0 ? timesUp : RemainingHumans <= 0 && Escapees == 0 ? allHumans : Escapees > maximumEscapees ? tooManyEscapees : mostHumans;
 
                 pressEnter.gameObject.SetActive(endText.gameObject.activeSelf);
                 endText.gameObject.SetActive(!endText.gameObject.activeSelf);
@@ -88,14 +115,27 @@ namespace DestroyAllEarthlings
         private void ClearScreen()
         {
             this.image.material.SetFloat("_Size", 0);
-            victory.gameObject.SetActive(false);
-            gameOver.gameObject.SetActive(false);
+            timesUp.gameObject.SetActive(false);
+            allHumans.gameObject.SetActive(false);
+            tooManyEscapees.gameObject.SetActive(false);
+            mostHumans.gameObject.SetActive(false);
             pressEnter.gameObject.SetActive(false);
         }
 
         private void OnApplicationQuit()
         {
             this.image.material.SetFloat("_Size", 0);
+        }
+
+        private void AddPoints(int earthlingCount)
+        {
+            RemainingHumans -= earthlingCount;
+        }
+
+        private void AddEscapee()
+        {
+            Escapees++;
+            RemainingHumans--;
         }
     }
 }

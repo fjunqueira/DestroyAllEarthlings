@@ -13,13 +13,13 @@ namespace DestroyAllEarthlings
 
         public MeshAdjacencyMap(NormalizedMesh normalizedMesh)
         {
-            var triangles = normalizedMesh.Triangles.ChunksOf(3).ToList();
+            var triangles = normalizedMesh.Triangles.SelectMany(triangleList => triangleList).ChunksOf(3).ToList();
 
             this.adjacencyMap = triangles.Select(triangle => new KeyValuePair<Triangle, Triangle[]>(
-                new Triangle(IndexToVertex(triangle, normalizedMesh)),
+                new Triangle(normalizedMesh.IndexToVertex(triangle)),
                 triangles.Where(otherTriangle => HasCommonVertices(otherTriangle, triangle))
                 .Select(otherTriangle =>
-                    new Triangle(IndexToVertex(otherTriangle, normalizedMesh))).ToArray())).ToDictionary();
+                    new Triangle(normalizedMesh.IndexToVertex(otherTriangle))).ToArray())).ToDictionary();
         }
 
         private bool HasCommonVertices(IEnumerable<int> otherTriangle, IEnumerable<int> triangle)

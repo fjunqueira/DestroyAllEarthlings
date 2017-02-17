@@ -4,11 +4,8 @@ using UnityEngine;
 
 public class PointsText : MonoBehaviour
 {
-    [SerializeField]
-    private Camera cam;
-
     private void Update()
     {
-        transform.rotation = cam.transform.rotation;
+        transform.rotation = Camera.main.transform.rotation;
     }
 }

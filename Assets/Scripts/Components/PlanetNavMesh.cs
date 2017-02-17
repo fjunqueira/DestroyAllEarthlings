@@ -12,18 +12,21 @@ namespace DestroyAllEarthlings
 
         public string MeshName { get; set; }
 
-        private void Start()
+        private void Awake()
         {
-            using (var stream = new FileStream("Assets/Grids/" + this.MeshName, FileMode.Open))
+            var planetGrid = Resources.Load("EarthGrid") as TextAsset;
+            
+            using (var stream = new MemoryStream(planetGrid.bytes))
             {
                 var formatter = Formatter.CreateFormatter();
+
                 this.grid = formatter.Deserialize(stream) as PlanetGrid;
             }
         }
 
-        public PathfindingNode[] FindPath(PathfindingNode startingNode, PathfindingNode destinationNode)
+        public PathfindingNode[] FindPath(PathfindingNode startingNode)
         {
-            return this.grid.FindPath(startingNode, destinationNode);
+            return this.grid.RunDijkstra(startingNode as PlanetNode);
         }
 
         public PathfindingNode GetNodeByPosition(Vector3 position)

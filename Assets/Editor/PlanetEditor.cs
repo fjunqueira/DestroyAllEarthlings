@@ -47,7 +47,7 @@ namespace DestroyAllEarthlings.EditorExtensions
                      mousePosition = currentEvent.mousePosition,
                      prefab = PrefabUtility.GetPrefabParent(Selection.activeObject) as GameObject
                  })
-                 .Where(x => x.prefab != null && x.prefab.GetComponentInChildren<Destroyable>() != null)
+                 .Where(x => x.prefab != null && x.prefab.GetComponentInChildren<IPlanetElement>() != null)
                  .Subscribe(data =>
                  {
                      RaycastHit hit;
@@ -61,21 +61,46 @@ namespace DestroyAllEarthlings.EditorExtensions
 
                          var colliderHeight = boxCollider == null ? 0 : boxCollider.size.y;
 
-                         var centerOffset = 1 + ((colliderHeight / 2) / hit.point.magnitude);
+                         var centerOffset = 1 + (colliderHeight / 200);
 
-                         obj.transform.position = hit.point * centerOffset;
+                         var triangle = FacePicker.ToTriangle(hit);
+
+                         obj.transform.position = triangle.Centroid * centerOffset;
                          obj.transform.up = hit.normal;
                          obj.transform.parent = planet.transform;
 
                          foreach (var gravityBody in obj.GetComponentsInChildren<GravityBody>(true))
-                         {
-                             gravityBody
-                                .GetType()
-                                .GetField("attractor", BindingFlags.Instance | BindingFlags.NonPublic)
-                                .SetValue(gravityBody, planet.GetComponent<GravityAttractor>());
-                         }
+                             SetNonPublicMember(gravityBody, planet.GetComponent<GravityAttractor>(), "attractor");
+
+                         var pathfindingObstacle = obj.GetComponent<NavMeshElement>();
+
+                         SetNavMeshInfo(pathfindingObstacle, triangle);
                      }
                  });
+        }
+
+        private static void SetNavMeshInfo(NavMeshElement pathfindingObstacle, Triangle triangle)
+        {
+            if (pathfindingObstacle != null)
+            {
+                var planetNavMesh = planet.GetComponent<PlanetNavMesh>();
+
+                SetNonPublicMember(pathfindingObstacle, triangle.Centroid, "blockingNodePosition");
+                SetNonPublicMember(pathfindingObstacle, planetNavMesh, "navMesh");
+
+                foreach (var follower in pathfindingObstacle.GetComponentsInChildren<PathFollower>(true))
+                {
+                    SetNonPublicMember(follower, planetNavMesh, "navMesh");
+                    SetNonPublicMember(follower, triangle.Centroid, "startingNodePosition");
+                }
+            }
+        }
+
+        private static void SetNonPublicMember<T1, T2>(T1 obj, T2 value, string field)
+        {
+            obj.GetType()
+               .GetField(field, BindingFlags.Instance | BindingFlags.NonPublic)
+               .SetValue(obj, value);
         }
 
         public void OnEnable()
