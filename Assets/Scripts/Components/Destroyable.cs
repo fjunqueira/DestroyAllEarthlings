@@ -54,8 +54,22 @@ namespace DestroyAllEarthlings
 
         private void ShowPoints()
         {
+            if (earthlingCount == 0) return;
+            
+            var randomScale = GetScale();
             pointsMesh.transform.position = pointsMesh.transform.position * 1.1f;
+            pointsMesh.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
             pointsMesh.gameObject.SetActive(true);
+        }
+
+        private float GetScale()
+        {
+            if (earthlingCount < 2) return 1.0f;
+            if (earthlingCount < 5) return 2.0f;
+            if (earthlingCount < 8) return 2.5f;
+            if (earthlingCount < 15) return 3.0f;
+
+            return 4.0f;
         }
     }
 }
