@@ -61,7 +61,7 @@ namespace DestroyAllEarthlings.EditorExtensions
 
                          var colliderHeight = boxCollider == null ? 0 : boxCollider.size.y;
 
-                         var centerOffset = 1 + ((colliderHeight / 2) / hit.point.magnitude);
+                         var centerOffset = 1 + (colliderHeight / 200);
 
                          var triangle = FacePicker.ToTriangle(hit);
 

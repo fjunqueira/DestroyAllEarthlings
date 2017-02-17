@@ -39,20 +39,7 @@ namespace DestroyAllEarthlings
 
         private static Vector3 GetNextPosition(Vector3 currentPosition, PlanetNode target)
         {
-            var possibleWaypoints = new List<Vector3>();
-
-            currentPosition = currentPosition.RoundTo(3);
-
-            if (currentPosition == target.Triangle.A.RoundTo(3))
-                possibleWaypoints.AddRange(new Vector3[] { target.Triangle.B, target.Triangle.C });
-            else if (currentPosition == target.Triangle.B.RoundTo(3))
-                possibleWaypoints.AddRange(new Vector3[] { target.Triangle.A, target.Triangle.C });
-            else if (currentPosition == target.Triangle.C.RoundTo(3))
-                possibleWaypoints.AddRange(new Vector3[] { target.Triangle.A, target.Triangle.B });
-            else
-                return target.Triangle.Vertices.OrderByDescending(vertice => Vector3.Distance(currentPosition, vertice)).First();
-
-            return possibleWaypoints.ElementAt(UnityEngine.Random.Range(0, possibleWaypoints.Count));
+            return target.Triangle.Vertices.OrderByDescending(vertice => Vector3.Distance(currentPosition, vertice)).First();
         }
     }
 }
