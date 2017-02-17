@@ -135,6 +135,7 @@ namespace DestroyAllEarthlings
         private void AddEscapee()
         {
             Escapees++;
+            RemainingHumans--;
         }
     }
 }
