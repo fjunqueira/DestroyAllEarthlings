@@ -70,7 +70,7 @@ namespace DestroyAllEarthlings
 
         private void Update()
         {
-            bool gameEnded = RemainingHumans <= 0 || gameDuration <= 0 || Escapees > maximumEscapees || RemainingHumans - Escapees == 0;
+            bool gameEnded = RemainingHumans <= 0 || gameDuration <= 0 || Escapees > maximumEscapees;
 
             if (gameEnded)
             {
@@ -103,7 +103,9 @@ namespace DestroyAllEarthlings
 
             while (true)
             {
-                var endText = gameDuration <= 0 ? timesUp : RemainingHumans <= 0 && Escapees == 0 ? allHumans : Escapees > maximumEscapees ? tooManyEscapees : mostHumans;
+                var endText = RemainingHumans <= 0 && Escapees == 0 ? allHumans : 
+                              Escapees > maximumEscapees ? tooManyEscapees : 
+                              Escapees + RemainingHumans <= maximumEscapees ? mostHumans : timesUp;
 
                 pressEnter.gameObject.SetActive(endText.gameObject.activeSelf);
                 endText.gameObject.SetActive(!endText.gameObject.activeSelf);
